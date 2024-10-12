@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
+
+group = 'com.github.jenkaby'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    implementation libs.bundles.spring.web.application
+
+    runtimeOnly libs.postgres.driver
+
+    annotationProcessor libs.lombok
+    annotationProcessor libs.sb.conf.processor
+    annotationProcessor libs.mapstruct
+
+// test deps
+    testImplementation libs.bundles.spring.test
+
+    testAnnotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}

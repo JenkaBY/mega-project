@@ -1,0 +1,53 @@
+[versions]
+springVersion = '3.3.4'
+springDepManagementVersion = '1.1.6'
+mapStructVersion = '1.6.2'
+
+[libraries]
+sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
+sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
+sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
+sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
+lombok = { module = 'org.projectlombok:lombok' }
+liquibase = { module = 'org.liquibase:liquibase-core' }
+postgres-driver = { module = 'org.postgresql:postgresql' }
+mapstruct = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
+# dev only
+sb-conf-processor = { module = 'org.springframework.boot:spring-boot-configuration-processor' }
+
+## TESTS deps
+# unit test deps
+sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
+sb-testcontainers = { module = 'org.springframework.boot:spring-boot-testcontainers' }
+assertj-core = { module = 'org.assertj:assertj-core' }
+awaitility = { module = 'org.awaitility:awaitility' }
+
+test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
+test-container-postgres = { module = 'org.testcontainers:postgresql' }
+
+# test launcher
+junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
+
+[plugins]
+spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
+spring-dependency-management = { id = 'io.spring.dependency-management', version.ref = 'springDepManagementVersion' }
+
+
+[bundles]
+spring-web-application = [
+    'sb-starter-jdbc',
+    'sb-starter-data',
+    'sb-starter-web',
+    'sb-starter-actuator',
+    'liquibase',
+    'mapstruct'
+]
+
+spring-test = [
+    'sb-starter-test',
+    'assertj-core',
+    'awaitility',
+    'sb-testcontainers',
+    'test-container-junit',
+    'test-container-postgres'
+]

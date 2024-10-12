@@ -1,0 +1,17 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: mega
+  datasource:
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/mega_db
+    driver-class-name: org.postgresql.Driver
+    name: mega_db_datasource
+  liquibase:
+    enabled: true
+    drop-first: false
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  jpa:
+    open-in-view: false

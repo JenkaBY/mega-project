@@ -1,0 +1,23 @@
+plugins {
+//    version catalog requires java plugin in the root project
+    id 'java'
+}
+
+allprojects {
+
+    repositories {
+        mavenCentral()
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+}
+
+// disable all compilation tasks because the root project should not contain any source files
+[compileJava, compileTestJava, build, jar].each {
+    it -> it.enabled = false
+}
+

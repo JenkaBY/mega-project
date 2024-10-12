@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    username: should_should_be_taken_from_testcontainers
+    password: should_should_be_taken_from_testcontainers
+    url: jdbc:postgresql://localhost:6543/test_mega_db
+  liquibase:
+    enabled: true
