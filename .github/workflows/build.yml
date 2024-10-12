@@ -1,0 +1,24 @@
+name: CI Test
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  tests:
+    name: "Gradle tests on JDK 21 Correto"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: 'corretto'
+          cache: 'gradle'
+      - name: Test with Gradle
+        run: ./gradlew clean test
