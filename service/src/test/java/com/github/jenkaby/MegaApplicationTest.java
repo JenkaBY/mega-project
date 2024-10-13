@@ -1,6 +1,6 @@
 package com.github.jenkaby;
 
-import com.github.jenkaby.support.AbstractReusableDbTest;
+import com.github.jenkaby.support.db.AbstractReusableDbTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

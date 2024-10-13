@@ -2,6 +2,7 @@ plugins {
     id 'java'
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.davidmc24.avro)
 }
 
 group = 'com.github.jenkaby'
@@ -17,8 +18,18 @@ configurations {
     }
 }
 
+compileJava {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=IGNORE'
+    ]
+}
+
 dependencies {
     implementation libs.bundles.spring.web.application
+    implementation libs.bundles.kafka
+    implementation libs.bundles.hibernate.extention
 
     runtimeOnly libs.postgres.driver
 
@@ -40,4 +51,9 @@ tasks.named('test') {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
     }
+}
+
+avro {
+    createSetters = false
+    outputCharacterEncoding = 'UTF-8'
 }

@@ -2,16 +2,31 @@
 springVersion = '3.3.4'
 springDepManagementVersion = '1.1.6'
 mapStructVersion = '1.6.2'
+hypersistanceUtilsHibernateVersion = '3.8.3'
+apacheAvroVersion = '1.11.3'
+confluentKafkaVersion = '7.5.1'
+gradlePlugingAvro = '1.9.1'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
 sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
+sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
 lombok = { module = 'org.projectlombok:lombok' }
 liquibase = { module = 'org.liquibase:liquibase-core' }
 postgres-driver = { module = 'org.postgresql:postgresql' }
 mapstruct = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
+hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
+jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
+
+# kafka
+spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
+kafka-schema-registry = { module = "io.confluent:kafka-schema-registry-client", version.ref = 'confluentKafkaVersion' }
+kafka-avro-serialiazer = { module = "io.confluent:kafka-avro-serializer", version.ref = 'confluentKafkaVersion' }
+# TODO check whether it's reqiured for gradle avro plugin or not
+apache-avro = { module = "org.apache.avro:avro", version.ref = 'apacheAvroVersion' }
+
 # dev only
 sb-conf-processor = { module = 'org.springframework.boot:spring-boot-configuration-processor' }
 
@@ -31,7 +46,7 @@ junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
 spring-dependency-management = { id = 'io.spring.dependency-management', version.ref = 'springDepManagementVersion' }
-
+davidmc24-avro = { id = 'com.github.davidmc24.gradle.plugin.avro', version.ref = 'gradlePlugingAvro'}
 
 [bundles]
 spring-web-application = [
@@ -39,10 +54,20 @@ spring-web-application = [
     'sb-starter-data',
     'sb-starter-web',
     'sb-starter-actuator',
+    'sb-starter-logging',
     'liquibase',
     'mapstruct'
 ]
-
+kafka = [
+    'spring-kafka',
+    'kafka-schema-registry',
+    'kafka-avro-serialiazer',
+    'apache-avro'
+]
+hibernate-extention = [
+    'hypersistence-utils-hibernate',
+    'jackson-xmlbind'
+]
 spring-test = [
     'sb-starter-test',
     'assertj-core',
