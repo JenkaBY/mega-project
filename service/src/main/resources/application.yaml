@@ -38,6 +38,8 @@ spring:
 #    for custom kafkaListenerContainerFactory, needs to set it programmatically by setting up this factory properties
     listener:
       ack-mode: MANUAL
+  config:
+    import: "classpath:application-management-config.yaml"
 logging:
   include-application-name: false
   level:
