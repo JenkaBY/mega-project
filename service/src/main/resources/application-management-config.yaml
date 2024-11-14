@@ -2,8 +2,17 @@ management:
   endpoints:
     web:
       exposure:
-#        don't expose all - *
-        include: "health,info,loggers,metrics,loggers"
+        #        don't expose all - *
+        #        include: "*"
+        include: [ "health","info","loggers","metrics","loggers","prometheus" ]
   endpoint:
     health:
       show-details: always
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.95,0.99
+    tags:
+      application: ${spring.application.name}

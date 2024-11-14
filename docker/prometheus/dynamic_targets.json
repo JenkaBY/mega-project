@@ -1,0 +1,12 @@
+[
+  {
+    "targets": [
+      "web-server-1:8081"
+    ]
+  },
+  {
+    "targets": [
+      "web-server-2:8082"
+    ]
+  }
+]
