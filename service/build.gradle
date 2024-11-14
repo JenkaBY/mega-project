@@ -30,6 +30,7 @@ dependencies {
     implementation libs.bundles.spring.web.application
     implementation libs.bundles.kafka
     implementation libs.bundles.hibernate.extention
+    implementation libs.bundles.spring.observability
 
     runtimeOnly libs.postgres.driver
 

@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'mega-project-monitor'
+
+rule_files:
+  - '/etc/prometheus/alert_rules.yml'
+  - '/etc/prometheus/recording_rules.yml'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets:
+          - 'localhost:9090'
+  - job_name: 'mega-app-scraper'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - '127.0.0.1:8080'
+  - job_name: 'mega-app-scraper-test'
+    metrics_path: '/api/test'
+    static_configs:
+      - targets:
+          - '127.0.0.1:8080'
+  - job_name: 'dynamic-web-servers'
+    scrape_interval: 1h
+    file_sd_configs:
+      - files:
+          - '/etc/prometheus/dynamic_targets.json'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - "localhost:9093"

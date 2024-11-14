@@ -1,0 +1,5 @@
+groups:
+  - name: example(it's used for to pre-compute expensive queries)
+    rules:
+      - record: job:scrape_duration_seconds:sum
+        expr: sum by (job) (scrape_duration_seconds)

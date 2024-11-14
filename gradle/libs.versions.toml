@@ -13,6 +13,7 @@ sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
+micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
 liquibase = { module = 'org.liquibase:liquibase-core' }
 postgres-driver = { module = 'org.postgresql:postgresql' }
@@ -46,7 +47,7 @@ junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
 spring-dependency-management = { id = 'io.spring.dependency-management', version.ref = 'springDepManagementVersion' }
-davidmc24-avro = { id = 'com.github.davidmc24.gradle.plugin.avro', version.ref = 'gradlePlugingAvro'}
+davidmc24-avro = { id = 'com.github.davidmc24.gradle.plugin.avro', version.ref = 'gradlePlugingAvro' }
 
 [bundles]
 spring-web-application = [
@@ -57,6 +58,9 @@ spring-web-application = [
     'sb-starter-logging',
     'liquibase',
     'mapstruct'
+]
+spring-observability = [
+    'micrometer-prometheus',
 ]
 kafka = [
     'spring-kafka',
