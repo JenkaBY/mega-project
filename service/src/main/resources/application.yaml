@@ -53,4 +53,7 @@ app:
         name: datacenter.business.fct.transaction.v0
         dlt: ${app.kafka.topics.transaction.name}.dlt
         partition: 2
-
+      message:
+        name: datacenter.notification.fct.message.v0
+        dlt: ${app.kafka.topics.message.name}.dlt
+        partition: 2
