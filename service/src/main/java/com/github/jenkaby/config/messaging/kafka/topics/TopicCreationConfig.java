@@ -22,6 +22,16 @@ public class TopicCreationConfig {
 
     @Value("${app.kafka.topics.transaction.partition}")
     private final int transactionPartition;
+    // notification message topic
+    @Value("${app.kafka.topics.message.name}")
+    private final String messageTopic;
+
+    @Value("${app.kafka.topics.message.dlt}")
+    private final String messageDlt;
+
+    @Value("${app.kafka.topics.message.partition}")
+    private final int messagePartition;
+
 
     @Bean
     public NewTopic transactionTopic() {
@@ -36,6 +46,25 @@ public class TopicCreationConfig {
     public NewTopic transactionDlt() {
         return TopicBuilder
                 .name(transactionDlt)
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+
+    @Bean
+    public NewTopic messageTopic() {
+        return TopicBuilder
+                .name(messageTopic)
+                .partitions(messagePartition)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic messageDlt() {
+        return TopicBuilder
+                .name(messageDlt)
                 .partitions(1)
                 .replicas(1)
                 .build();

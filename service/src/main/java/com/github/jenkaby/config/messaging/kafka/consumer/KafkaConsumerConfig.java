@@ -1,7 +1,6 @@
 package com.github.jenkaby.config.messaging.kafka.consumer;
 
 
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
@@ -42,12 +41,12 @@ public class KafkaConsumerConfig {
     @SneakyThrows
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaContainerFactory(
-            KafkaTemplate<Object, Object> kafkaTemplate) {
+            KafkaTemplate<Object, Object> stringKafkaTemplate) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
         var consumerProps = kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable());
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
         var commonErrorHandler = new DefaultErrorHandler(
-                new SimpleDltRecoverer(kafkaTemplate),
+                new SimpleDltRecoverer(stringKafkaTemplate),
                 new FixedBackOff(2_000, 5));
         commonErrorHandler.setRetryListeners(new LoggingRetryListener());
 
