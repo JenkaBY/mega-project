@@ -1,5 +1,7 @@
 package com.github.jenkaby.presentation.controller;
 
+import com.github.jenkaby.service.MyBean;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,15 @@ import java.util.concurrent.ThreadLocalRandom;
 @Slf4j
 @RequestMapping("/api/test")
 @RestController
+@RequiredArgsConstructor
 public class TestController {
+
+    private final MyBean myBean;
+
+    @GetMapping("/bean")
+    public String factoryBean() {
+        return myBean.getMessage();
+    }
 
     @GetMapping
     public String testProm(){
