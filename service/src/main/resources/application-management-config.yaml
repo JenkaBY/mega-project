@@ -4,8 +4,10 @@ management:
       exposure:
         #        don't expose all - *
         #        include: "*"
-        include: [ "health","info","loggers","metrics","loggers","prometheus" ]
+        include: [ "health","info","loggers","metrics","loggers","prometheus", "shutdown" ]
   endpoint:
+    shutdown:
+      enabled: true
     health:
       show-details: always
   metrics:

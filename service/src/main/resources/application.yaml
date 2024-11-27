@@ -1,9 +1,11 @@
 server:
   port: 8080
+  shutdown: graceful
 spring:
   application:
     name: mega-application
-
+  lifecycle:
+    timeout-per-shutdown-phase: 1m
   datasource:
     username: postgres
     password: postgres
