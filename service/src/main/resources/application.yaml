@@ -17,6 +17,11 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.xml
   jpa:
     open-in-view: false
+    properties:
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.region.factory_class: org.hibernate.cache.jcache.internal.JCacheRegionFactory
+      hibernate.javax.cache.uri: ehcache.xml
+      hibernate.javax.cache.provider: org.ehcache.jsr107.EhcacheCachingProvider
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
@@ -45,7 +50,8 @@ logging:
   level:
     org.springframework.kafka.listener.DeadLetterPublishingRecoverer: DEBUG
     org.springframework.kafka.core.KafkaTemplate: TRACE
-
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 app:
   kafka:
     topics:
