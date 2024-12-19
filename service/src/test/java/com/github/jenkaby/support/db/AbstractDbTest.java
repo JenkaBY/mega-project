@@ -7,12 +7,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static com.github.jenkaby.support.db.DbProperties.POSTGRES_IMAGE_NAME;
 
-@Testcontainers
+//@Testcontainers
 public class AbstractDbTest {
 
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            POSTGRES_IMAGE_NAME
-    );
+//    @Container
+//    @ServiceConnection
+//    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+//            POSTGRES_IMAGE_NAME
+//    );
 }

@@ -6,6 +6,8 @@ hypersistanceUtilsHibernateVersion = '3.8.3'
 apacheAvroVersion = '1.11.3'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
+cucumberVersion = '7.19.0'
+junitPlatformSuite = '1.11.1'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -41,6 +43,11 @@ awaitility = { module = 'org.awaitility:awaitility' }
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 
+cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
+cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion' }
+cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion' }
+junit-platform-suit = { module = "org.junit.platform:junit-platform-suite", version.ref = 'junitPlatformSuite' }
+
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
 
@@ -74,9 +81,15 @@ hibernate-extention = [
 ]
 spring-test = [
     'sb-starter-test',
-    'assertj-core',
-    'awaitility',
+#    'assertj-core',
+#    'awaitility',
     'sb-testcontainers',
     'test-container-junit',
     'test-container-postgres'
+]
+cucumber = [
+    'cucumber-java',
+    'cucumber-junit',
+    'cucumber-spring',
+    'junit-platform-suit'
 ]

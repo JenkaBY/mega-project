@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.davidmc24.avro)
 }
 
-group = 'com.github.jenkaby'
+group = 'com.github.jenkaby.mega.service'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
