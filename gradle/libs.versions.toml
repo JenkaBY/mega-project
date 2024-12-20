@@ -6,6 +6,7 @@ hypersistanceUtilsHibernateVersion = '3.8.3'
 apacheAvroVersion = '1.11.3'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
+cucumberVersion = '7.20.1'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -41,6 +42,12 @@ awaitility = { module = 'org.awaitility:awaitility' }
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 
+cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion'}
+# for junit 5
+cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion'}
+cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion'}
+# test suite for junit 5 because gradle can't run tests not-class-based tests
+junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite'}
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
 
@@ -78,4 +85,11 @@ spring-test = [
     'sb-testcontainers',
     'test-container-junit',
     'test-container-postgres'
+]
+
+cucumber-test = [
+    'cucumber-java',
+    'cucumber-junit',
+    'cucumber-spring',
+    'junit-platform-suite',
 ]
