@@ -55,7 +55,7 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<?, ?> avroKafkaTemplate(ConsumerFactory avroConsumerFactory) {
         KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory());
-        log.info("Initialized kafkaTemplate {}", kafkaTemplate);
+        log.info("Initialized avro kafkaTemplate {}", kafkaTemplate);
         kafkaTemplate.setConsumerFactory(avroConsumerFactory);
         return kafkaTemplate;
     }

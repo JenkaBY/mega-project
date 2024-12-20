@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TestController {
 
     @GetMapping
-    public String testProm(){
+    public String testProm() {
         try {
             var sleep = ThreadLocalRandom.current().nextInt(400, 699 + 1);
             log.info("Requested metrics. Sleep {} ms", sleep);
@@ -43,6 +43,7 @@ public class TestController {
 
         return "Should never be reached";
     }
+
     private static long fibonacci(int n) {
         if (n <= 1) return n;
         else return fibonacci(n-1) + fibonacci(n-2);

@@ -7,8 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.CreatedDate;
-
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -37,7 +35,7 @@ public class MessageLog {
     @Type(JsonType.class)
     private String rawHeader;
 
-    @Column(name = "raw_message",columnDefinition = "jsonb", nullable = false)
+    @Column(name = "raw_message", columnDefinition = "jsonb", nullable = false)
     @Type(JsonType.class)
     private String rawMessage;
 

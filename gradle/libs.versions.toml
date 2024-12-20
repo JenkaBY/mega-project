@@ -25,7 +25,7 @@ jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakart
 spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
 kafka-schema-registry = { module = "io.confluent:kafka-schema-registry-client", version.ref = 'confluentKafkaVersion' }
 kafka-avro-serialiazer = { module = "io.confluent:kafka-avro-serializer", version.ref = 'confluentKafkaVersion' }
-# TODO check whether it's reqiured for gradle avro plugin or not
+# TODO check whether it's required for gradle avro plugin or not
 apache-avro = { module = "org.apache.avro:avro", version.ref = 'apacheAvroVersion' }
 
 # dev only
@@ -72,10 +72,9 @@ hibernate-extention = [
     'hypersistence-utils-hibernate',
     'jackson-xmlbind'
 ]
+
 spring-test = [
     'sb-starter-test',
-    'assertj-core',
-    'awaitility',
     'sb-testcontainers',
     'test-container-junit',
     'test-container-postgres'
