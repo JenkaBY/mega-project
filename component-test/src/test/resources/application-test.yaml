@@ -1,0 +1,7 @@
+spring:
+  test:
+    mockmvc:
+      webdriver:
+        enabled: false
+      webclient:
+        enabled: false
