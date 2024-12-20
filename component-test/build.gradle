@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+}
+
+group = 'com.github.jenkaby.mega.componenttest'
+version = '0.0.1-SNAPSHOT'
+
+
+
+// configurations {
+//     testCompileOnly {
+//         extendsFrom testAnnotationProcessor
+//     }
+// }
+
+
+dependencies {
+    testImplementation project(':service')
+
+    testImplementation libs.sb.starter.web
+    testImplementation libs.bundles.spring.test
+    testImplementation libs.bundles.cucumber.test
+
+    testAnnotationProcessor libs.lombok
+    testCompileOnly libs.lombok
+
+    testRuntimeOnly libs.junit.platform.launcher
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty("cucumber.junit-platform.naming-strategy", "long")
+    testLogging {
+        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+    }
+}
