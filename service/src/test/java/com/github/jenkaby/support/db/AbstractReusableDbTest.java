@@ -10,7 +10,7 @@ import static com.github.jenkaby.support.db.DbProperties.POSTGRES_IMAGE_NAME;
 public class AbstractReusableDbTest {
 
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres;
+    static final PostgreSQLContainer<?> postgres;
 
     static {
         postgres = new PostgreSQLContainer<>(POSTGRES_IMAGE_NAME);
