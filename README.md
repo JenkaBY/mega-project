@@ -2,17 +2,16 @@ Implemented:
 - [x] gradle multi projects
 - [x] gradle version catalog
 - [x] postgres testcontainers
-- [x] slice tests (JPA)
-
+- [x] slice tests (JPA, WebMvc)
+- [x] component tests via Cucumber
+- [x] github CI
+- [x] Kafka consumer
+- [x] string SerDe
 
 In progress
-- [ ] github CI
-- [ ] Kafka consumer
 - [ ] Avro schemas
 - [ ] schema registry
-- [ ] component tests via Cucumber
 - [ ] avro SerDe
-- [ ] string SerDe
 - [ ] byte array SerDe
 - [ ] JSON SerDe
 
@@ -23,7 +22,8 @@ TODO:
 - [ ] kafka ssl via SslBundles
 - [ ] spring web via https with self-signed certificate
 - [ ] retryable schema registry
-
+- [ ] graceful shutdown
+- [ ] QueryDSL or jooq
 
 ### Notes:
  The docker compose file contains several services that use host network 
