@@ -20,6 +20,10 @@ dependencies {
     testImplementation project(':service')
 
     testImplementation libs.sb.starter.web
+//    used to wrap each scenario in txn
+    testImplementation libs.spring.tx
+    testImplementation libs.spring.kafka
+
     testImplementation libs.bundles.spring.test
     testImplementation libs.bundles.cucumber.test
 

@@ -14,6 +14,8 @@ sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
+spring-tx = { module = 'org.springframework:spring-tx'}
+
 micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
 liquibase = { module = 'org.liquibase:liquibase-core' }
@@ -41,6 +43,7 @@ awaitility = { module = 'org.awaitility:awaitility' }
 
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
+test-container-kafka = { module = 'org.testcontainers:kafka' }
 
 cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion'}
 # for junit 5
@@ -84,7 +87,8 @@ spring-test = [
     'sb-starter-test',
     'sb-testcontainers',
     'test-container-junit',
-    'test-container-postgres'
+    'test-container-postgres',
+    'test-container-kafka',
 ]
 
 cucumber-test = [

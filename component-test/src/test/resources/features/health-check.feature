@@ -1,5 +1,6 @@
 Feature: Application is running
 
+  @txn
   Scenario: Application is running and  its status should be OK
     Given application is started
     When a request has been made to '/actuator/health' endpoint

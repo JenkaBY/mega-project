@@ -1,7 +1,31 @@
 spring:
+  kafka:
+    consumer:
+#      to be able to read all messages by main listener too
+      auto-offset-reset: earliest
   test:
+    kafka:
+      consumer:
+        group-id: CT-mega-app-group
     mockmvc:
       webdriver:
         enabled: false
       webclient:
         enabled: false
+logging:
+  level:
+    org.apache.kafka.clients.consumer.internals.ConsumerCoordinator: WARN
+    org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker: WARN
+    org.springframework.kafka.listener.KafkaMessageListenerContainer: WARN
+    io.confluent.kafka.serializers.KafkaAvroSerializerConfig: WARN
+    org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector: WARN
+    org.apache.kafka.clients.NetworkClient: WARN
+    org.apache.kafka.clients.Metadata: WARN
+    org.apache.kafka.common.utils.AppInfoParser: WARN
+
+app:
+  kafka:
+    dlt:
+      retry:
+        interval: 500
+        max-attempts: 2
