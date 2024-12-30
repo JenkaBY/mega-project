@@ -12,6 +12,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,10 @@ public class KafkaConsumerConfig {
 
     private final KafkaProperties kafkaProperties;
     private final ObjectProvider<SslBundles> sslBundles;
+    @Value("${app.kafka.dlt.retry.interval}")
+    private final long backoffInterval;
+    @Value("${app.kafka.dlt.retry.max-attempts}")
+    private final int retryMaxAttempt;
 
     @SneakyThrows
     @Bean
@@ -47,7 +52,7 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
         var commonErrorHandler = new DefaultErrorHandler(
                 new SimpleDltRecoverer(stringKafkaTemplate),
-                new FixedBackOff(2_000, 5));
+                new FixedBackOff(backoffInterval, retryMaxAttempt));
         commonErrorHandler.setRetryListeners(new LoggingRetryListener());
 
 //        don't acknowledge the message after handle

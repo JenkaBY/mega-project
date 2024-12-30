@@ -20,13 +20,16 @@ spring:
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      group-id: kafka-mega-group
+      group-id: mega-app-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       enable-auto-commit: false
       auto-offset-reset: latest
+      properties:
+#        disable creation topics on start app. Use the 'createTopics' spring profile instead.
+        allow.auto.create.topics: false
     producer:
-      client-id: kafka-mega-producer
+      client-id: mega-app
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 #      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -48,12 +51,16 @@ logging:
 
 app:
   kafka:
+    dlt:
+      retry:
+        interval: 1000
+        max-attempts: 3
     topics:
       transaction:
-        name: datacenter.business.fct.transaction.v0
+        name: business.fct.transaction.v0
         dlt: ${app.kafka.topics.transaction.name}.dlt
         partition: 2
       message:
-        name: datacenter.notification.fct.message.v0
+        name: notification.fct.message.v0
         dlt: ${app.kafka.topics.message.name}.dlt
         partition: 2

@@ -1,7 +1,7 @@
 package com.github.jenkaby.presentation.controller;
 
 
-import com.github.jenkaby.messaging.NotificationMessageSender;
+import com.github.jenkaby.messaging.producer.NotificationMessageSender;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
