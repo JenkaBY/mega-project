@@ -1,5 +1,9 @@
 package com.github.jenkaby.messaging.consumer;
 
+import com.github.jenkaby.model.TransactionEvent;
+import com.github.jenkaby.model.TransactionSourceMetadata;
+import com.github.jenkaby.service.MessageLogService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,16 +17,18 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
-public class NotificationListener {
+public class TransactionJsonListener {
 
+    private final MessageLogService logService;
 
     @KafkaListener(topics = {
-            "${app.kafka.topics.message.name}"
-    }, containerFactory = "stringKafkaContainerFactory")
-    public void onNotificationMessageHandler(@Headers Map<String, Object> headers, @Payload String payload,
+            "${app.kafka.topics.transaction-json.name}"
+    }, containerFactory = "jsonListenerContainerFactory")
+    public void onTransactionEventHandler(@Headers Map<String, Object> headers, @Payload TransactionEvent payload,
                                              @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
-                                             ConsumerRecord<String, String> raw,
+                                             ConsumerRecord<String, TransactionEvent> raw,
                                              Acknowledgment acknowledgment) {
         log.info("MessageKey [{}] Payload [{}]", messageKey, payload);
         headers.forEach((headerKey, value) -> log.debug("Header: {}={}", headerKey, value));
@@ -30,6 +36,12 @@ public class NotificationListener {
             throw new RuntimeException("Exception based on message key");
         }
 
+        logService.save(payload, TransactionSourceMetadata.builder()
+                .source("%s:%s:%s".formatted(raw.topic(), raw.partition(), raw.offset()))
+                .encoding("JSON")
+                .headers(headers)
+                .modified(this.getClass().getCanonicalName())
+                .build());
         acknowledgment.acknowledge();
     }
 }

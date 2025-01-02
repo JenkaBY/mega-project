@@ -3,7 +3,6 @@ server:
 spring:
   application:
     name: mega-application
-
   datasource:
     username: postgres
     password: postgres
@@ -28,6 +27,8 @@ spring:
       properties:
 #        disable creation topics on start app. Use the 'createTopics' spring profile instead.
         allow.auto.create.topics: false
+#        for json deserializer
+        spring.json.trusted.packages: com.github.jenkaby.model
     producer:
       client-id: mega-app
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -41,13 +42,15 @@ spring:
 #    for custom kafkaListenerContainerFactory, needs to set it programmatically by setting up this factory properties
     listener:
       ack-mode: MANUAL
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
   config:
     import: "classpath:application-management-config.yaml"
 logging:
   include-application-name: false
   level:
     org.springframework.kafka.listener.DeadLetterPublishingRecoverer: DEBUG
-    org.springframework.kafka.core.KafkaTemplate: TRACE
 
 app:
   kafka:
@@ -59,6 +62,10 @@ app:
       transaction:
         name: business.fct.transaction.v0
         dlt: ${app.kafka.topics.transaction.name}.dlt
+        partition: 2
+      transaction-json:
+        name: business.fct.transaction-json.v0
+        dlt: ${app.kafka.topics.transaction-json.name}.dlt
         partition: 2
       message:
         name: notification.fct.message.v0

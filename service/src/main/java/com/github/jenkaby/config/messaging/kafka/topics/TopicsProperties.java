@@ -1,6 +1,8 @@
 package com.github.jenkaby.config.messaging.kafka.topics;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Map;

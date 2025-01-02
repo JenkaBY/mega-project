@@ -8,6 +8,7 @@ import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 
@@ -32,4 +33,16 @@ public class TestKafkaMessageConsumerConfig {
         return factory;
     }
 
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Object> testJsonKafkaContainerFactory(
+            ConsumerFactory<String, Object> jsonConsumerFactory) {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
+
+        factory.setConsumerFactory(jsonConsumerFactory);
+        factory.getContainerProperties().setGroupId(testConsumerGroupId);
+        factory.setAutoStartup(true);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+
+        return factory;
+    }
 }
