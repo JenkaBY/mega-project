@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class MessageLog {
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "source", nullable = false, length = Integer.MAX_VALUE)
     private String source;

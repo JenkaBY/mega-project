@@ -4,12 +4,12 @@ package com.github.jenkaby.config.messaging.kafka.consumer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +21,13 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.ConsumerRecordRecoverer;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.converter.JsonMessageConverter;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -43,15 +46,14 @@ public class KafkaConsumerConfig {
     @Value("${app.kafka.dlt.retry.max-attempts}")
     private final int retryMaxAttempt;
 
-    @SneakyThrows
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaContainerFactory(
-            KafkaTemplate<Object, Object> stringKafkaTemplate) {
+            KafkaTemplate<Object, Object> commonKafkaTemplate) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
         var consumerProps = kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable());
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
         var commonErrorHandler = new DefaultErrorHandler(
-                new SimpleDltRecoverer(stringKafkaTemplate),
+                new SimpleDltRecoverer(commonKafkaTemplate),
                 new FixedBackOff(backoffInterval, retryMaxAttempt));
         commonErrorHandler.setRetryListeners(new LoggingRetryListener());
 
@@ -64,26 +66,15 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, SpecificRecord> avroListenerContainerFactory(
-            KafkaTemplate<Object, Object> kafkaTemplate) {
+            KafkaTemplate<Object, Object> commonKafkaTemplate) {
 
         ConcurrentKafkaListenerContainerFactory<String, SpecificRecord> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(avroConsumerFactory());
 
         var errorHandler = new DefaultErrorHandler(
-                new DeadLetterPublishingRecoverer(
-                        kafkaTemplate,
-                        // destination resolver
-                        new BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition>() {
-                            @Override
-                            public TopicPartition apply(ConsumerRecord<?, ?> consumerRecord, Exception e) {
-                                var dltName = consumerRecord.topic() + ".dlt";
-                                log.info("Resolve topic : {}", dltName);
-                                return new TopicPartition(dltName, 0);
-                            }
-                        }
-                ),
-                new FixedBackOff(2_000, 5));
+                deadLetterRecoverer(commonKafkaTemplate),
+                new FixedBackOff(backoffInterval, retryMaxAttempt));
 
         errorHandler.setRetryListeners(new LoggingRetryListener());
         factory.setCommonErrorHandler(errorHandler);
@@ -110,6 +101,61 @@ public class KafkaConsumerConfig {
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, SpecificRecord>(props);
         return consumerFactory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Object> jsonListenerContainerFactory(
+            KafkaTemplate<Object, Object> commonKafkaTemplate) {
+
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(jsonConsumerFactory());
+
+//        allows to dynamic argument type matching for record listeners
+        factory.setRecordMessageConverter(new JsonMessageConverter());
+
+        var errorHandler = new DefaultErrorHandler(
+                deadLetterRecoverer(commonKafkaTemplate),
+                new FixedBackOff(backoffInterval, retryMaxAttempt));
+
+        errorHandler.setRetryListeners(new LoggingRetryListener());
+        factory.setCommonErrorHandler(errorHandler);
+
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, Object> jsonConsumerFactory() {
+        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable()));
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
+
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+//        JsonDeserializer works with predefined type of payload but isn't universal solution
+//        it's better for performance to use ByteArrayDeserializer instead of StringDeserializer
+        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ByteArrayDeserializer.class);
+        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JsonDeserializer.REMOVE_TYPE_INFO_HEADERS, true);
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.github.jenkaby.model");
+
+        var consumerFactory = new DefaultKafkaConsumerFactory<String, Object>(props);
+        return consumerFactory;
+    }
+
+    public ConsumerRecordRecoverer deadLetterRecoverer(KafkaTemplate<Object, Object> kafkaTemplate) {
+        return new DeadLetterPublishingRecoverer(
+                kafkaTemplate,
+                // destination resolver
+                new BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition>() {
+                    @Override
+                    public TopicPartition apply(ConsumerRecord<?, ?> consumerRecord, Exception e) {
+                        var dltName = consumerRecord.topic() + ".dlt";
+                        log.info("Resolve topic : {}", dltName);
+                        return new TopicPartition(dltName, 0);
+                    }
+                }
+        );
     }
 
 }

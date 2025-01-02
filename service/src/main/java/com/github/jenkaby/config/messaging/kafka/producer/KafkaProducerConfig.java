@@ -1,6 +1,7 @@
 package com.github.jenkaby.config.messaging.kafka.producer;
 
 
+import com.github.jenkaby.messaging.base.JsonPayload;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.DelegatingByTypeSerializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,31 +43,31 @@ public class KafkaProducerConfig {
                                 Map.entry(Byte.class, new BytesSerializer()),
                                 Map.entry(String.class, new StringSerializer()),
                                 Map.entry(SpecificRecord.class, new KafkaAvroSerializer()),
-                                Map.entry(GenericRecord.class, new KafkaAvroSerializer())
+                                Map.entry(GenericRecord.class, new KafkaAvroSerializer()),
+                                Map.entry(JsonPayload.class, new JsonSerializer<>())
                         )
                 ), true // required to be able to convert to parent class
         );
 
         return new DefaultKafkaProducerFactory<>(
                 kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable()),
-                new StringSerializer(),
-                delegatingByTypeSerializer
+                new StringSerializer(), // key serializer
+                delegatingByTypeSerializer // value serializer
         );
     }
 
     @Bean
-    public KafkaTemplate<?, ?> avroKafkaTemplate(ConsumerFactory avroConsumerFactory) {
+    public KafkaTemplate<?, ?> avroKafkaTemplate(@Qualifier("avroConsumerFactory") ConsumerFactory avroConsumerFactory) {
         KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory());
         log.info("Initialized avro kafkaTemplate {}", kafkaTemplate);
         kafkaTemplate.setConsumerFactory(avroConsumerFactory);
         return kafkaTemplate;
     }
 
-
     @Bean
-    public KafkaTemplate<String, Object> stringKafkaTemplate() {
+    public KafkaTemplate<String, Object> commonKafkaTemplate() {
         KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory());
-        log.info("Initialized string kafkaTemplate {}", kafkaTemplate);
+        log.info("Initialized common kafkaTemplate {}", kafkaTemplate);
         return kafkaTemplate;
     }
 }

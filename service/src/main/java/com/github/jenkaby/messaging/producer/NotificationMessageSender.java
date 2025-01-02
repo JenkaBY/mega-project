@@ -14,13 +14,13 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class NotificationMessageSender {
 
-    private final KafkaTemplate<Object, Object> stringKafkaTemplate;
+    private final KafkaTemplate<Object, Object> commonKafkaTemplate;
     @Value("${app.kafka.topics.message.name}")
     private final String notificationTopicName;
 
     public void sendNotificationMessage(String kafkaMessageKey, String payload) {
         log.info("Sending message for key={}", kafkaMessageKey);
-        CompletableFuture<SendResult<Object, Object>> send = stringKafkaTemplate.send(notificationTopicName, kafkaMessageKey, payload);
+        CompletableFuture<SendResult<Object, Object>> send = commonKafkaTemplate.send(notificationTopicName, kafkaMessageKey, payload);
         send.whenComplete((res, ex) -> {
             if (ex != null) {
                 log.error("Exception occurred during sending message '{}' to the topic '{}'", payload, notificationTopicName);
@@ -31,7 +31,25 @@ public class NotificationMessageSender {
             var topic = res.getRecordMetadata().topic();
             var partition = res.getRecordMetadata().partition();
             var offset = res.getRecordMetadata().offset();
-            log.info("Message[key={}] payload='{}' was delivered in the '{}[part={}, offset={}]'", key, message, topic, partition, offset);
+            log.info("Message[key={}] payload='{}' was delivered in the '{}[partition={}, offset={}]'", key, message, topic, partition, offset);
+        });
+    }
+
+
+    public <T> void sendMessageToTopic(String topic, String kafkaMessageKey, T payload) {
+        log.info("Sending message for key={}", kafkaMessageKey);
+        CompletableFuture<SendResult<Object, Object>> send = commonKafkaTemplate.send(topic, kafkaMessageKey, payload);
+        send.whenComplete((res, ex) -> {
+            if (ex != null) {
+                log.error("Exception occurred during sending message '{}' to the topic '{}'", payload, topic);
+                return;
+            }
+            var message = res.getProducerRecord().value().toString();
+            var key = res.getProducerRecord().key().toString();
+            var topicActual = res.getRecordMetadata().topic();
+            var partition = res.getRecordMetadata().partition();
+            var offset = res.getRecordMetadata().offset();
+            log.info("Message[key={}] payload='{}' was delivered on the '{}[partition={}, offset={}]'", key, message, topicActual, partition, offset);
         });
     }
 }

@@ -2,13 +2,11 @@ package com.github.jenkaby.steps;
 
 import com.github.jenkaby.context.LocalMessagesStore;
 import com.github.jenkaby.model.ReceivedNotificationMessage;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.SoftAssertions;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 

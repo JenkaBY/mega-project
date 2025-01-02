@@ -3,7 +3,6 @@ server:
 spring:
   application:
     name: mega-application
-
   datasource:
     username: postgres
     password: postgres
@@ -41,13 +40,15 @@ spring:
 #    for custom kafkaListenerContainerFactory, needs to set it programmatically by setting up this factory properties
     listener:
       ack-mode: MANUAL
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
   config:
     import: "classpath:application-management-config.yaml"
 logging:
   include-application-name: false
   level:
     org.springframework.kafka.listener.DeadLetterPublishingRecoverer: DEBUG
-    org.springframework.kafka.core.KafkaTemplate: TRACE
 
 app:
   kafka:
@@ -59,6 +60,10 @@ app:
       transaction:
         name: business.fct.transaction.v0
         dlt: ${app.kafka.topics.transaction.name}.dlt
+        partition: 2
+      transaction-json:
+        name: business.fct.transaction-json.v0
+        dlt: ${app.kafka.topics.transaction-json.name}.dlt
         partition: 2
       message:
         name: notification.fct.message.v0
