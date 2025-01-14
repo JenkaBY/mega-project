@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.spring.dependency.management)
 //    generate java classes from avro
     alias(libs.plugins.davidmc24.avro)
+    alias(libs.plugins.owasp.dependency.check)
 }
 
 group = 'com.github.jenkaby'
