@@ -8,12 +8,11 @@ Implemented:
 - [x] Kafka consumer
 - [x] string SerDe
 - [x] JSON SerDe
+- [x] Avro schemas
+- [x] schema registry
+- [x] avro SerDe
 
 In progress
-- [ ] Avro schemas
-- [ ] schema registry
-- [ ] avro SerDe
-- [ ] byte array SerDe
 
 TODO:
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)

@@ -4,17 +4,18 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "message_log")
 public class MessageLog {
 

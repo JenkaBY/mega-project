@@ -1,0 +1,55 @@
+{
+  "name": "TransactionEventAvro",
+  "namespace": "com.github.jenkaby.megaapp.avro.payload.v0",
+  "type": "record",
+  "fields": [
+    {
+      "name": "transactionId",
+      "description": "unique identifier of transaction",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      }
+    },
+    {
+      "name": "status",
+      "description": "status of transaction",
+      "type": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "source",
+      "description": "topic or endpoint url from where the transaction entity was originated",
+      "type": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "amount",
+      "description": "status of transaction",
+      "type": {
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 10,
+        "scale": 2
+      }
+    },
+    {
+      "name": "createdAt",
+      "description": "when transaction event was created",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    },
+    {
+      "name": "transactionTimestamp",
+      "description": "when transaction was created",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-micros"
+      }
+    }
+  ]
+}

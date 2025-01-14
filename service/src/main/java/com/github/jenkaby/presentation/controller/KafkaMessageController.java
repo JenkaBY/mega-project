@@ -27,12 +27,22 @@ public class KafkaMessageController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{topic-name}")
+    @PostMapping("/{topic-name}/json")
     public String sendToJsonTransactionTopic(@PathVariable("topic-name") String topic,
                                              @RequestParam("key") String key,
                                              @RequestBody TransactionEventRequest txnDto) {
-        log.info("POST '/api/kafka/{}' request was received. Key={} payload={}",topic, key, txnDto);
+        log.info("POST '/api/kafka/{}/jsom' request was received. Key={} payload={}", topic, key, txnDto);
         messageSender.sendMessageToTopic(topic, key, transactionEventMapper.toEntity(txnDto));
+        return "OK";
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{topic-name}/avro")
+    public String sendToAvroTransactionTopic(@PathVariable("topic-name") String topic,
+                                             @RequestParam("key") String key,
+                                             @RequestBody TransactionEventRequest txnDto) {
+        log.info("POST '/api/kafka/{}/avro' request was received. Key={} payload={}", topic, key, txnDto);
+        messageSender.sendMessageToTopic(topic, key, transactionEventMapper.toAvro(txnDto, this.getClass().getCanonicalName()));
         return "OK";
     }
 }

@@ -1,6 +1,7 @@
 package com.github.jenkaby.infrastructure.listener;
 
 import com.github.jenkaby.context.LocalMessagesStore;
+import com.github.jenkaby.megaapp.avro.payload.v0.TransactionEventAvro;
 import com.github.jenkaby.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +46,19 @@ public class TestKafkaListeners {
                 h -> log.info("[TEST] JSON header key:'{}'='{}' from topic '{}'",
                         h.key(), new String(h.value(), StandardCharsets.UTF_8).intern(), topic)
         );
+        messagesStore.receiveMsg(topic, message);
+    }
+
+
+    @KafkaListener(
+            topics = {"${app.kafka.topics.transaction.name}", "${app.kafka.topics.transaction.dlt}"},
+            containerFactory = "testAvroContainerFactory"
+    )
+    public void handleTransactionAvroTopic(
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+            @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
+            ConsumerRecord<String, TransactionEventAvro> message) {
+        log.info("[TEST] Message received '{}' from topic '{}'", message.value(), topic);
         messagesStore.receiveMsg(topic, message);
     }
 }

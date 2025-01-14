@@ -1,6 +1,7 @@
 package com.github.jenkaby.config.messaging;
 
 import lombok.AllArgsConstructor;
+import org.apache.avro.specific.SpecificRecord;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -40,7 +41,18 @@ public class TestKafkaMessageConsumerConfig {
 
         factory.setConsumerFactory(jsonConsumerFactory);
         factory.getContainerProperties().setGroupId(testConsumerGroupId);
-        factory.setAutoStartup(true);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+
+        return factory;
+    }
+
+    @Bean
+    @SuppressWarnings("unchecked")
+    public ConcurrentKafkaListenerContainerFactory<String, Object> testAvroContainerFactory(
+            ConsumerFactory<String, ? super SpecificRecord> avroConsumerFactory) {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
+        factory.setConsumerFactory((ConsumerFactory<String, Object>) avroConsumerFactory);
+        factory.getContainerProperties().setGroupId(testConsumerGroupId);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
         return factory;

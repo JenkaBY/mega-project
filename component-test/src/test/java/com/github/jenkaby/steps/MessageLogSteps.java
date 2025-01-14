@@ -25,9 +25,9 @@ public class MessageLogSteps {
                 .sorted(Comparator.comparing(MessageLogExpectation::messageId))
                 .toList();
 
-       var actualSorted = repository.findAll().stream()
-               .sorted(Comparator.comparing(MessageLog::getMessageId))
-               .toList();
+        var actualSorted = repository.findAll().stream()
+                .sorted(Comparator.comparing(MessageLog::getMessageId))
+                .toList();
 
         assertThat(actualSorted).zipSatisfy(sortedExpected, (actual, expected) -> {
             log.info("actual {}:", actual);

@@ -1,8 +1,6 @@
 package com.github.jenkaby.steps.common.hook;
 
 import com.github.jenkaby.context.ScenarioContext;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
@@ -16,14 +14,16 @@ public class SpringTransactionHooks {
     private final BeanFactory beanFactory;
     private final ScenarioContext scenarioContext;
 
-    @Before(value = "@txn", order = 100)
+    //    Looks it's not working
+//    @Before(value = "@txn", order = 100)
     public void startTransaction() {
         log.info("Begin scenario Txn");
         scenarioContext.setTransactionStatus(obtainPlatformTransactionManager()
                 .getTransaction(new DefaultTransactionDefinition()));
     }
 
-    @After(value = "@txn", order = 100)
+    //    Looks it's not working
+//    @After(value = "@txn", order = 100)
     public void rollBackTransaction() {
         log.info("Rollback scenario Txn");
         obtainPlatformTransactionManager()

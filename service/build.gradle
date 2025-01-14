@@ -2,6 +2,7 @@ plugins {
     id 'java'
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
+//    generate java classes from avro
     alias(libs.plugins.davidmc24.avro)
 }
 
@@ -29,6 +30,7 @@ compileJava {
 dependencies {
     implementation libs.bundles.spring.web.application
     implementation libs.bundles.kafka
+    implementation libs.bundles.kafka.avro
     implementation libs.bundles.hibernate.extention
     implementation libs.bundles.spring.observability
 
@@ -36,7 +38,7 @@ dependencies {
 
     annotationProcessor libs.lombok
     annotationProcessor libs.sb.conf.processor
-    annotationProcessor libs.mapstruct
+    annotationProcessor libs.mapstruct.processor
 
 // test deps
     testImplementation libs.bundles.spring.test

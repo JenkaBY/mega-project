@@ -14,13 +14,14 @@ sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
-spring-tx = { module = 'org.springframework:spring-tx'}
+spring-tx = { module = 'org.springframework:spring-tx' }
 
 micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
 liquibase = { module = 'org.liquibase:liquibase-core' }
 postgres-driver = { module = 'org.postgresql:postgresql' }
-mapstruct = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
+mapstruct = { module = 'org.mapstruct:mapstruct', version.ref = 'mapStructVersion' }
+mapstruct-processor = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
 hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
 jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
 
@@ -45,12 +46,12 @@ test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 test-container-kafka = { module = 'org.testcontainers:kafka' }
 
-cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion'}
+cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
 # for junit 5
-cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion'}
-cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion'}
+cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion' }
+cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion' }
 # test suite for junit 5 because gradle can't run tests not-class-based tests
-junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite'}
+junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
 
@@ -74,6 +75,8 @@ spring-observability = [
 ]
 kafka = [
     'spring-kafka',
+]
+kafka-avro = [
     'kafka-schema-registry',
     'kafka-avro-serialiazer',
     'apache-avro'

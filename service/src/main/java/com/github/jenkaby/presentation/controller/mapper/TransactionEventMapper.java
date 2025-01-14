@@ -1,21 +1,18 @@
 package com.github.jenkaby.presentation.controller.mapper;
 
+import com.github.jenkaby.megaapp.avro.payload.v0.TransactionEventAvro;
 import com.github.jenkaby.model.TransactionEvent;
 import com.github.jenkaby.presentation.controller.model.TransactionEventRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@RequiredArgsConstructor
-@Component
-public class TransactionEventMapper {
+@Mapper
+public interface TransactionEventMapper {
 
-    public TransactionEvent toEntity(TransactionEventRequest source) {
-        return new TransactionEvent(
-                source.transactionId(),
-                source.status(),
-                source.amount(),
-                source.createdAt(),
-                source.transactionTimestamp()
-        );
-    }
+    TransactionEvent toEntity(TransactionEventRequest source);
+
+    TransactionEvent toEntity(TransactionEventAvro source);
+
+    @Mapping(source = "eventSource", target = "source")
+    TransactionEventAvro toAvro(TransactionEventRequest source, String eventSource);
 }

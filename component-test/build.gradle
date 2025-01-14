@@ -8,7 +8,6 @@ group = 'com.github.jenkaby.mega.componenttest'
 version = '0.0.1-SNAPSHOT'
 
 
-
 // configurations {
 //     testCompileOnly {
 //         extendsFrom testAnnotationProcessor
@@ -23,6 +22,7 @@ dependencies {
 //    used to wrap each scenario in txn
     testImplementation libs.spring.tx
     testImplementation libs.spring.kafka
+    testImplementation libs.bundles.kafka.avro
     testImplementation libs.sb.starter.data
 
     testImplementation libs.bundles.spring.test

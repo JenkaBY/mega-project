@@ -3,6 +3,8 @@ spring:
     consumer:
 #      to be able to read all messages by main listener too
       auto-offset-reset: earliest
+    properties:
+      schema.registry.url: mock://mega-app-scope
   test:
     kafka:
       consumer:
