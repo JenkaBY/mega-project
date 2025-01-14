@@ -8,6 +8,9 @@ confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.20.1'
 dependencyCheckVersion = '11.1.1'
+# TODO upgrade version when app is migrated to SB3.4
+# see the compatibility matrix
+springdocOpenApiStarterWebUiVersion = '2.6.0'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -25,6 +28,7 @@ mapstruct = { module = 'org.mapstruct:mapstruct', version.ref = 'mapStructVersio
 mapstruct-processor = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
 hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
 jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
+springdoc-starter-webmvc-ui = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'springdocOpenApiStarterWebUiVersion' }
 
 # kafka
 spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
@@ -69,6 +73,7 @@ spring-web-application = [
     'sb-starter-web',
     'sb-starter-actuator',
     'sb-starter-logging',
+    'springdoc-starter-webmvc-ui',
     'liquibase',
     'mapstruct'
 ]
