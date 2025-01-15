@@ -11,17 +11,19 @@ Implemented:
 - [x] Avro schemas
 - [x] schema registry
 - [x] avro SerDe
+- [x] graceful shutdown
 
 In progress
+- [ ] retryable schema registry
 
 TODO:
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
 - [ ] use the best-practise for topic name convention [dev.io](https://dev.to/devshawn/apache-kafka-topic-naming-conventions-3do6)
 - [ ] kafka ssl via SslBundles
 - [ ] spring web via https with self-signed certificate
-- [ ] retryable schema registry
-- [ ] graceful shutdown
 - [ ] QueryDSL or jooq
+- [ ] filter kafka message by field or header value
+- [ ] skip retrying message consuming for specific exception
 
 ### Notes:
  The docker compose file contains several services that use host network 
