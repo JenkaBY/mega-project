@@ -5,18 +5,20 @@ Implemented:
 - [x] slice tests (JPA, WebMvc)
 - [x] component tests via Cucumber
 - [x] github CI
-- [x] Kafka consumer
-- [x] string SerDe
-- [x] JSON SerDe
-- [x] Avro schemas
-- [x] schema registry
-- [x] avro SerDe
+- [x] kafka: Kafka consumer
+- [x] kafka: string SerDe
+- [x] kafka: JSON SerDe
+- [x] kafka: Avro schemas
+- [x] kafka: schema registry
+- [x] kafka: avro SerDe
 - [x] graceful shutdown
-- [x] skip retrying message consuming for specific exception
+- [x] kafka: skip retrying message consuming for specific exception
+- [X] kafka: filter kafka message by field or header value
 
 In progress
 
-- [ ] filter kafka message by field or header value
+- [ ] Add profile to docker-compose file to easily start only minimal number of services
+
 
 TODO:
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)

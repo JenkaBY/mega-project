@@ -124,6 +124,8 @@ public class KafkaConsumerConfig {
         factory.setCommonErrorHandler(errorHandler);
 
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+
+        factory.setRecordFilterStrategy(new SkipHeaderRecordFilterStrategy<>());
         return factory;
     }
 

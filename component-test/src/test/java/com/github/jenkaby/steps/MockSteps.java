@@ -8,9 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.mockito.Mockito;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RequiredArgsConstructor
 public class MockSteps {
@@ -26,5 +30,17 @@ public class MockSteps {
     public void verifyTransactionLogServiceWasInvokedNTimes(int times) {
         verify(transactionJsonListenerService, times(times))
                 .process(anyMap(), any(TransactionEvent.class), anyString(), any(ConsumerRecord.class));
+    }
+
+    @Then("verify no interaction with TransactionJsonListenerService happened during {int} seconds")
+    public void verifyNoInteractionTransactionLogService(int seconds) {
+        var duration = Duration.of(seconds, ChronoUnit.SECONDS);
+        int pollInterval = 100;
+        await()
+                .pollInterval(pollInterval, TimeUnit.MILLISECONDS)
+                .during(duration)
+                .atMost(duration.plusMillis(pollInterval * 2))
+                .untilAsserted(() -> verify(transactionJsonListenerService, never())
+                        .process(anyMap(), any(TransactionEvent.class), anyString(), any(ConsumerRecord.class)));
     }
 }

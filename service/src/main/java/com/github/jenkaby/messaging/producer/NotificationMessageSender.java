@@ -2,12 +2,18 @@ package com.github.jenkaby.messaging.producer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,10 +41,17 @@ public class NotificationMessageSender {
         });
     }
 
-
     public <T> void sendMessageToTopic(String topic, String kafkaMessageKey, T payload) {
-        log.info("Sending message for key={}", kafkaMessageKey);
-        CompletableFuture<SendResult<Object, Object>> send = commonKafkaTemplate.send(topic, kafkaMessageKey, payload);
+        sendMessageToTopic(topic, Map.of(), kafkaMessageKey, payload);
+    }
+
+    public <T> void sendMessageToTopic(String topic, Map<String, String> headers, String msgKey, T payload) {
+        log.info("Sending message for key={}", msgKey);
+        var kafkaHeaders = new RecordHeaders(headers.entrySet().stream()
+                .map(entry -> new RecordHeader(entry.getKey(), entry.getValue().getBytes(StandardCharsets.UTF_8)))
+                .collect(Collectors.toSet()));
+        ProducerRecord<Object, Object> toSend = new ProducerRecord<>(topic, null, null, msgKey, payload, kafkaHeaders);
+        CompletableFuture<SendResult<Object, Object>> send = commonKafkaTemplate.send(toSend);
         send.whenComplete((res, ex) -> {
             if (ex != null) {
                 log.error("Exception occurred during sending message '{}' to the topic '{}'", payload, topic);

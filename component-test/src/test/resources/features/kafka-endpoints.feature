@@ -48,6 +48,20 @@ Feature: Describe endpoints related to KafkaMessageController
       | topic                            | msgKey  | status | txnId |
       | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
 
+  Scenario Outline: JSON message sent via POST endpoint with the specific header should be delivered onto the topic
+    Given application is started
+    And the following TransactionEvent payload is
+      | status   | amount | txnId   |
+      | <status> | 10.1   | <txnId> |
+    When a POST request has been made to '/api/kafka/<topic>/json' endpoint with query parameters
+      | key      | kafka_header.should-skip |
+      | <msgKey> | true                     |
+    Then the response status is 201
+    And verify no interaction with TransactionJsonListenerService happened during 2 seconds
+    Examples:
+      | topic                            | msgKey  | status | txnId |
+      | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
+
   Scenario Outline: DLT incoming message when JSON message sent via POST endpoint and message key contains 'error'
     Given application is started
     And the following TransactionEvent payload is
