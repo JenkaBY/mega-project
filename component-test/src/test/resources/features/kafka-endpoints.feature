@@ -48,6 +48,23 @@ Feature: Describe endpoints related to KafkaMessageController
       | topic                            | msgKey  | status | txnId |
       | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
 
+  Scenario Outline: DLT incoming message when JSON message sent via POST endpoint and message key contains 'error'
+    Given application is started
+    And the following TransactionEvent payload is
+      | status   | amount | txnId   |
+      | <status> | 10.1   | <txnId> |
+    When a POST request has been made to '/api/kafka/<topic>/json' endpoint with query parameters
+      | key      |
+      | <msgKey> |
+    Then the response status is 201
+    And 1 message was received on the '<topic>' topic
+    And 1 message was received on the '<topic>.dlt' topic
+    And verify TransactionJsonListenerService was invoked <numberOfRetries> times
+    Examples:
+      | topic                            | status | txnId | msgKey                  | numberOfRetries |
+      | business.fct.transaction-json.v0 | NEW    | TXN1  | error                   | 3               |
+      | business.fct.transaction-json.v0 | NEW    | TXN1  | non-retryable-exception | 1               |
+
   Scenario Outline: AVRO message sent via POST endpoint should be delivered onto the topic
     Given application is started
     And the following TransactionEvent payload is

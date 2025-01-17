@@ -12,9 +12,11 @@ Implemented:
 - [x] schema registry
 - [x] avro SerDe
 - [x] graceful shutdown
+- [x] skip retrying message consuming for specific exception
 
 In progress
-- [ ] retryable schema registry
+
+- [ ] filter kafka message by field or header value
 
 TODO:
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
@@ -22,8 +24,8 @@ TODO:
 - [ ] kafka ssl via SslBundles
 - [ ] spring web via https with self-signed certificate
 - [ ] QueryDSL or jooq
-- [ ] filter kafka message by field or header value
-- [ ] skip retrying message consuming for specific exception
+- [ ] retryable schema registry (it should be on the main source
+  soon https://github.com/confluentinc/schema-registry/pull/3424)
 
 ### Notes:
  The docker compose file contains several services that use host network 

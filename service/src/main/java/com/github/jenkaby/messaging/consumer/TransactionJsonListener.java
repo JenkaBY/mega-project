@@ -1,8 +1,7 @@
 package com.github.jenkaby.messaging.consumer;
 
 import com.github.jenkaby.model.TransactionEvent;
-import com.github.jenkaby.model.TransactionSourceMetadata;
-import com.github.jenkaby.service.MessageLogService;
+import com.github.jenkaby.service.TransactionJsonListenerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -21,7 +20,7 @@ import java.util.Map;
 @Component
 public class TransactionJsonListener {
 
-    private final MessageLogService logService;
+    private final TransactionJsonListenerService transactionJsonListenerService;
 
     @KafkaListener(topics = {
             "${app.kafka.topics.transaction-json.name}"
@@ -31,16 +30,7 @@ public class TransactionJsonListener {
                                           ConsumerRecord<String, TransactionEvent> raw,
                                           Acknowledgment acknowledgment) {
         log.info("JSON MessageKey [{}] Payload [{}]", messageKey, payload);
-        if (messageKey != null && messageKey.toLowerCase().contains("error")) {
-            throw new RuntimeException("Exception based on message key");
-        }
-
-        logService.save(payload, TransactionSourceMetadata.builder()
-                .source("%s:%s:%s".formatted(raw.topic(), raw.partition(), raw.offset()))
-                .encoding("JSON")
-                .headers(headers)
-                .modified(this.getClass().getCanonicalName())
-                .build());
+        transactionJsonListenerService.process(headers, payload, messageKey, raw);
         acknowledgment.acknowledge();
     }
 }

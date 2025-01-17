@@ -1,6 +1,7 @@
 package com.github.jenkaby.config.messaging.kafka.consumer;
 
 
+import com.github.jenkaby.service.exception.KafkaNonRetryableException;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.RequiredArgsConstructor;
@@ -119,6 +120,7 @@ public class KafkaConsumerConfig {
                 new FixedBackOff(backoffInterval, retryMaxAttempt));
 
         errorHandler.setRetryListeners(new LoggingRetryListener());
+        errorHandler.addNotRetryableExceptions(KafkaNonRetryableException.class);
         factory.setCommonErrorHandler(errorHandler);
 
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
