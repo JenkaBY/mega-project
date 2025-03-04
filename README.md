@@ -11,13 +11,12 @@ Implemented:
 - [x] kafka: Avro schemas
 - [x] kafka: schema registry
 - [x] kafka: avro SerDe
-- [x] graceful shutdown
+- [x] graceful shutdown. [Note](#gracefully-shutdown)
 - [x] kafka: skip retrying message consuming for specific exception
-- [X] kafka: filter kafka message by field or header value
+- [x] kafka: filter kafka message by field or header value
+- [x] Add profile to docker-compose file to easily start only minimal number of services. [Note](#start-infrastructure)
 
 In progress
-
-- [ ] Add profile to docker-compose file to easily start only minimal number of services
 
 
 TODO:
@@ -28,6 +27,7 @@ TODO:
 - [ ] QueryDSL or jooq
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
+- [ ] Spring Security(JWT, Basic)
 
 ### Notes:
  The docker compose file contains several services that use host network 
@@ -42,4 +42,31 @@ Ideally the prometheus container should be able to establish connection to the r
 .See the [How to connect to the Docker host from inside a Docker container?](https://medium.com/@TimvanBaarsen/how-to-connect-to-the-docker-host-from-inside-a-docker-container-112b4c71bc66)
 Additionally, it's needed to prometheus config to be reconfigured according to docker network configuration(use service name) for grafana, prom/alertmanager and prometheus itself.
 
+### Start infrastructure
+
+Start infrastructure(db, kafka's services without kafka-ui):
+
+```shell
+docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' up -d
+```
+
+To start infrastructure(db, kafka's services without kafka-ui):
+
+```shell
+docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' stop
+```
+
+To start observability infrastructure(prometheus, grafana, prometheus-alert and so):
+
+```shell
+docker compose --file ./docker/docker-compose.yaml --profile 'observability' up -d
+```
+
+To stop ALL infrastructure(prometheus, grafana, prometheus-alert and so):
+
+```shell
+docker compose --file ./docker/docker-compose.yaml --profile 'observability' --profile 'kafka-admin' --profile 'app' stop
+```
+
+### Gracefully shutdown
 To gracefully shutdown application, send POST localhost:8080/actuator/shutdown
