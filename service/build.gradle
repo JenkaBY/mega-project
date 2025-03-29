@@ -30,6 +30,7 @@ compileJava {
 
 dependencies {
     implementation libs.bundles.spring.web.application
+    implementation libs.sb.starter.aop
     implementation libs.bundles.kafka
     implementation libs.bundles.kafka.avro
     implementation libs.bundles.hibernate.extention

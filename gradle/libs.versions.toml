@@ -16,6 +16,7 @@ springdocOpenApiStarterWebUiVersion = '2.6.0'
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
 sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
+sb-starter-aop = { module = 'org.springframework.boot:spring-boot-starter-aop' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
 spring-tx = { module = 'org.springframework:spring-tx' }

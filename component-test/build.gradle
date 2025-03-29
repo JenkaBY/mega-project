@@ -24,6 +24,7 @@ dependencies {
     testImplementation libs.spring.kafka
     testImplementation libs.bundles.kafka.avro
     testImplementation libs.sb.starter.data
+    testImplementation libs.bundles.spring.observability
 
     testImplementation libs.bundles.spring.test
     testImplementation libs.bundles.cucumber.test

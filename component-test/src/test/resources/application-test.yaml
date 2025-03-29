@@ -18,13 +18,15 @@ logging:
   level:
     org.apache.kafka.clients.consumer.internals.ConsumerCoordinator: WARN
     org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker: WARN
+    org.apache.kafka.clients.consumer.internals.SubscriptionState: WARN
     org.springframework.kafka.listener.KafkaMessageListenerContainer: WARN
     io.confluent.kafka.serializers.KafkaAvroSerializerConfig: WARN
     org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector: WARN
     org.apache.kafka.clients.NetworkClient: WARN
     org.apache.kafka.clients.Metadata: WARN
     org.apache.kafka.common.utils.AppInfoParser: WARN
-
+    com.github.jenkaby.service.support.advice.LatencyTrackAdvice: DEBUG
+    com.github.jenkaby.service.support.MetricRecordService: DEBUG
 app:
   kafka:
     dlt:

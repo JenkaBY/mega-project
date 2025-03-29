@@ -15,8 +15,12 @@ Implemented:
 - [x] kafka: skip retrying message consuming for specific exception
 - [x] kafka: filter kafka message by field or header value
 - [x] Add profile to docker-compose file to easily start only minimal number of services. [Note](#start-infrastructure)
+- [x] AOP
 
 In progress
+
+- [ ] Bean Post Processor(BPP)
+- [ ] Measure performance difference between AOP and BPP and native
 
 
 TODO:
@@ -28,6 +32,7 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Spring Security(JWT, Basic)
+
 
 ### Notes:
  The docker compose file contains several services that use host network 
@@ -44,13 +49,13 @@ Additionally, it's needed to prometheus config to be reconfigured according to d
 
 ### Start infrastructure
 
-Start infrastructure(db, kafka's services without kafka-ui):
+Start infrastructure(db, kafka's services):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' up -d
 ```
 
-To start infrastructure(db, kafka's services without kafka-ui):
+To stop infrastructure(db, kafka's services):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' stop

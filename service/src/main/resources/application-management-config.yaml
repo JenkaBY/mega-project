@@ -15,6 +15,7 @@ management:
       percentiles-histogram:
         http.server.requests: true
       percentiles:
+        #        ?? doesn't work together with management.metrics.distribution.percentiles-histogram.http.server.requests=true
         http.server.requests: 0.95,0.99
     tags:
       application: ${spring.application.name}
