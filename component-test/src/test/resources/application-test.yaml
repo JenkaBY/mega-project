@@ -30,6 +30,7 @@ logging:
     com.github.jenkaby.service.support.MetricRecordService: DEBUG
     com.github.jenkaby.presentation.controller.DelayController: DEBUG
     com.github.jenkaby.config.telemetry.RecordLatencyBeanPostProcessor: DEBUG
+    com.github.jenkaby.service.BasicClientDelayService: DEBUG
 app:
   kafka:
     dlt:

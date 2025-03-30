@@ -4,6 +4,7 @@ import com.github.jenkaby.config.telemetry.TelemetryCounter;
 import com.github.jenkaby.config.telemetry.TelemetryTag;
 import com.github.jenkaby.service.support.annotation.RecordMetric;
 import com.github.jenkaby.service.support.annotation.TrackLatency;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,13 @@ public class BasicClientDelayService implements ClientDelayService {
         log.debug("[aop wrapped] Start delay at {}", LocalDateTime.now());
         delayService.makeDelay(delayMs);
         log.debug("[aop wrapped] End delay at {}", LocalDateTime.now());
+    }
+
+    @Timed(value = "delay.service.latency", extraTags = {"type", "timed"})
+    @Override
+    public void timedMicrometerInvokeMakeDelay(long delayMs) {
+        log.debug("[timed micrometer] Start delay at {}", LocalDateTime.now());
+        delayService.makeDelay(delayMs);
+        log.debug("[timed micrometer] End delay at {}", LocalDateTime.now());
     }
 }

@@ -18,4 +18,6 @@ public interface ClientDelayService {
     void bbpInvokeMakeDelay(long delayMs);
 
     void aopWrappedInvokeMakeDelay(long delayMs);
+
+    void timedMicrometerInvokeMakeDelay(long delayMs);
 }

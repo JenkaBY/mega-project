@@ -9,8 +9,9 @@ Feature: Describe endpoints related to Delay controller
     Then the response status is 200
     And measured '<latencyMetric>' metric has been recorded at ~<delay> ms with <tags> tags
     Examples:
-      | url                       | delay | latencyMetric         | tags                      |
-      | /api/delay/aop-annotation | 5     | delay.service.latency | {"type":"aop-annotation"} |
-      | /api/delay/aop-execution  | 5     | delay.service.latency | {"type":"aop-execution"}  |
-      | /api/delay/bpp            | 5     | delay.service.latency | {"type":"bpp"}            |
-      | /api/delay/native         | 5     |                       |                           |
+      | url                         | delay | latencyMetric         | tags                      |
+      | /api/delay/aop-annotation   | 5     | delay.service.latency | {"type":"aop-annotation"} |
+      | /api/delay/aop-execution    | 5     | delay.service.latency | {"type":"aop-execution"}  |
+      | /api/delay/bpp              | 5     | delay.service.latency | {"type":"bpp"}            |
+      | /api/delay/timed-micrometer | 5     | delay.service.latency | {"type":"timed"}          |
+      | /api/delay/native           | 5     |                       |                           |

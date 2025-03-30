@@ -17,9 +17,9 @@ Implemented:
 - [x] Add profile to docker-compose file to easily start only minimal number of services. [Note](#start-infrastructure)
 - [x] AOP
 - [x] Bean Post Processor(BPP)(CGLib proxy type)
+- [x] @Timed Micrometer
 
 In progress
-
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
 
 
@@ -32,7 +32,6 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Spring Security(JWT, Basic)
-- [ ] @Timed Micrometer
 - [ ] Bean Post Processor(BPP)(DynamicProxy proxy type)
 
 ### Notes:

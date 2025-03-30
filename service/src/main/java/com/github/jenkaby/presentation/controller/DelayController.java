@@ -68,6 +68,15 @@ public class DelayController {
         return response(delay);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/timed-micrometer")
+    public String invokeTimedMicrometerExecutionLatencyMeasure(
+            @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
+        log.info("Incoming GET request for /timed-micrometer");
+        clientDelayService.timedMicrometerInvokeMakeDelay(delay);
+        return response(delay);
+    }
+
     private String response(long delay) {
         return "OK after " + delay + " ms delay";
     }
