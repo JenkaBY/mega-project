@@ -43,6 +43,15 @@ public class DelayController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/bpp")
+    public String invokeBppExecutionLatencyMeasure(
+            @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
+        log.info("Incoming GET request for /bpp");
+        clientDelayService.bbpInvokeMakeDelay(delay);
+        return response(delay);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/native")
     public String invokeNativeLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
@@ -55,6 +64,7 @@ public class DelayController {
         var tags = TelemetryTag.TYPE_NATIVE.getTags();
         var latency = Duration.ofNanos(measured.getNanos());
         metricRecordService.recordLatency(metric, tags, latency);
+        log.info("[Native] recorded latency {} ns", latency.toNanos());
         return response(delay);
     }
 

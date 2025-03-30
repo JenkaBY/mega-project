@@ -12,4 +12,5 @@ Feature: Describe endpoints related to Delay controller
       | url                       | delay | latencyMetric         | tags                      |
       | /api/delay/aop-annotation | 5     | delay.service.latency | {"type":"aop-annotation"} |
       | /api/delay/aop-execution  | 5     | delay.service.latency | {"type":"aop-execution"}  |
+      | /api/delay/bpp            | 5     | delay.service.latency | {"type":"bpp"}            |
       | /api/delay/native         | 5     |                       |                           |

@@ -16,11 +16,11 @@ Implemented:
 - [x] kafka: filter kafka message by field or header value
 - [x] Add profile to docker-compose file to easily start only minimal number of services. [Note](#start-infrastructure)
 - [x] AOP
+- [x] Bean Post Processor(BPP)(CGLib proxy type)
 
 In progress
 
-- [ ] Bean Post Processor(BPP)
-- [ ] Measure performance difference between AOP and BPP and native
+- [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
 
 
 TODO:
@@ -32,7 +32,8 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Spring Security(JWT, Basic)
-
+- [ ] @Timed Micrometer
+- [ ] Bean Post Processor(BPP)(DynamicProxy proxy type)
 
 ### Notes:
  The docker compose file contains several services that use host network 

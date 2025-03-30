@@ -16,6 +16,7 @@ spring:
         enabled: false
 logging:
   level:
+    #    root: OFF
     org.apache.kafka.clients.consumer.internals.ConsumerCoordinator: WARN
     org.apache.kafka.clients.consumer.internals.ConsumerRebalanceListenerInvoker: WARN
     org.apache.kafka.clients.consumer.internals.SubscriptionState: WARN
@@ -27,6 +28,8 @@ logging:
     org.apache.kafka.common.utils.AppInfoParser: WARN
     com.github.jenkaby.service.support.advice.LatencyTrackAdvice: DEBUG
     com.github.jenkaby.service.support.MetricRecordService: DEBUG
+    com.github.jenkaby.presentation.controller.DelayController: DEBUG
+    com.github.jenkaby.config.telemetry.RecordLatencyBeanPostProcessor: DEBUG
 app:
   kafka:
     dlt:
