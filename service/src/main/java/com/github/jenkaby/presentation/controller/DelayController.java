@@ -1,17 +1,12 @@
 package com.github.jenkaby.presentation.controller;
 
-import com.github.jenkaby.config.telemetry.TelemetryCounter;
 import com.github.jenkaby.config.telemetry.TelemetryTag;
-import com.github.jenkaby.service.ClientDelayService;
-import com.github.jenkaby.service.DelayService;
-import com.github.jenkaby.service.support.MeasurementService;
-import com.github.jenkaby.service.support.MetricRecordService;
+import com.github.jenkaby.service.delay.ClientDelayService;
+import com.github.jenkaby.service.delay.ClientDelayServiceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
 
 @Slf4j
 @RequestMapping("/api/delay")
@@ -19,17 +14,14 @@ import java.time.Duration;
 @RestController
 public class DelayController {
 
-    private final ClientDelayService clientDelayService;
-    private final DelayService delayService;
-    private final MeasurementService measurementService;
-    private final MetricRecordService metricRecordService;
+    private final ClientDelayServiceContext clientDelayServiceContext;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/aop-annotation")
     public String invokeAopAnnotationLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /aop-annotation");
-        clientDelayService.invokeMakeDelay(delay);
+        getClientByTag(TelemetryTag.TYPE_AOP_ANNOTATION).delegateInvocation(delay);
         return response(delay);
     }
 
@@ -38,7 +30,7 @@ public class DelayController {
     public String invokeAopExecutionLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /aop-execution");
-        clientDelayService.aopWrappedInvokeMakeDelay(delay);
+        getClientByTag(TelemetryTag.TYPE_AOP_EXECUTION).delegateInvocation(delay);
         return response(delay);
     }
 
@@ -47,7 +39,7 @@ public class DelayController {
     public String invokeBppExecutionLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /bpp");
-        clientDelayService.bbpInvokeMakeDelay(delay);
+        getClientByTag(TelemetryTag.TYPE_BPP).delegateInvocation(delay);
         return response(delay);
     }
 
@@ -56,25 +48,21 @@ public class DelayController {
     public String invokeNativeLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /native");
-        var measured = measurementService.measure(() -> {
-            delayService.makeDelay(delay);
-            return null;
-        });
-        var metric = TelemetryCounter.DELAY_SERVICE_LATENCY.getMetricName();
-        var tags = TelemetryTag.TYPE_NATIVE.getTags();
-        var latency = Duration.ofNanos(measured.getNanos());
-        metricRecordService.recordLatency(metric, tags, latency);
-        log.info("[Native] recorded latency {} ns", latency.toNanos());
+        getClientByTag(TelemetryTag.TYPE_NATIVE).delegateInvocation(delay);
         return response(delay);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/timed-micrometer")
-    public String invokeTimedMicrometerExecutionLatencyMeasure(
+    public String invokeTimedMicrometerLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /timed-micrometer");
-        clientDelayService.timedMicrometerInvokeMakeDelay(delay);
+        getClientByTag(TelemetryTag.TYPE_TIMED).delegateInvocation(delay);
         return response(delay);
+    }
+
+    private ClientDelayService getClientByTag(TelemetryTag tag) {
+        return clientDelayServiceContext.getByType(ClientDelayService.constructKey(tag));
     }
 
     private String response(long delay) {

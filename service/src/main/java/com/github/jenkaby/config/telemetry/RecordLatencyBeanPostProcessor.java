@@ -1,7 +1,7 @@
 package com.github.jenkaby.config.telemetry;
 
 
-import com.github.jenkaby.service.ClientDelayService;
+import com.github.jenkaby.service.delay.ClientDelayService;
 import com.github.jenkaby.service.support.MeasurementService;
 import com.github.jenkaby.service.support.MetricRecordService;
 import com.github.jenkaby.service.support.annotation.RecordMetric;
@@ -14,53 +14,51 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.cglib.proxy.Enhancer;
-import org.springframework.cglib.proxy.MethodInterceptor;
-import org.springframework.cglib.proxy.MethodProxy;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 
 @Component
 @Slf4j
-public class RecordLatencyBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
+@RequiredArgsConstructor
+public class RecordLatencyBeanPostProcessor implements BeanPostProcessor {
 
-    private ApplicationContext applicationContext;
+    private static final Class<RecordMetric> TARGET_ANNOTATION = RecordMetric.class;
+
+    private final ObjectProvider<MeasurementService> measurementServiceProvider;
+    private final ObjectProvider<MetricRecordService> metricRecordServiceProvider;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (!(bean instanceof ClientDelayService)) {
             return bean;
         }
-        Object target = this.getTargetObject(bean);
+        var target = this.getTargetObject(bean);
 
         var annotation = Arrays.stream(target.getClass().getMethods())
-                .map(m -> Optional.ofNullable(AnnotationUtils.getAnnotation(m, RecordMetric.class)))
+                .map(m -> Optional.ofNullable(AnnotationUtils.getAnnotation(m, TARGET_ANNOTATION)))
                 .filter(Optional::isPresent)
                 .findFirst()
-                .flatMap(o -> o)
+                .flatMap(Function.identity())
                 .orElse(null);
         if (annotation == null) {
-            log.debug("Skipping {} because of missing {} annotation", beanName, RecordMetric.class.getSimpleName());
+            log.debug("Skipping {} because of missing {} annotation", beanName, TARGET_ANNOTATION.getSimpleName());
             return bean;
         }
-        final MeasurementService measurementService = applicationContext.getBean(MeasurementService.class);
-        final MetricRecordService metricRecordService = applicationContext.getBean(MetricRecordService.class);
-
         checkProxyType(bean);
-
-        return addLatencyMeasurementInterceptorAop(bean, target.getClass(), measurementService, metricRecordService);
+        return new LatencyRecordingProxyFactory(bean, measurementServiceProvider, metricRecordServiceProvider)
+                .getProxy();
+//        return addLatencyMeasurementInterceptor(bean);
     }
 
     private void checkProxyType(Object bean) {
@@ -77,6 +75,7 @@ public class RecordLatencyBeanPostProcessor implements BeanPostProcessor, Applic
     private Object getTargetObject(Object proxy) throws BeansException {
 //         TODO improve it. We need to handle all types of proxies
         if (proxy instanceof Advised advised) {
+            log.info("Proxy {} is instance of {}", proxy, Advised.class);
             try {
                 return advised.getTargetSource().getTarget();
             } catch (Exception e) {
@@ -86,84 +85,178 @@ public class RecordLatencyBeanPostProcessor implements BeanPostProcessor, Applic
         return proxy;
     }
 
-    private <T> Object addLatencyMeasurementInterceptor(Object bean, Class<T> clazz, MeasurementService measurementService, MetricRecordService metricRecordService) {
-        log.info("++++ TARGET CLASS " + clazz);
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(clazz);
-        MethodInterceptor methodInterceptor = new RecordLatencyInterceptor(measurementService, metricRecordService);
-        enhancer.setCallback(methodInterceptor);
-        return (T) enhancer.create();
-    }
+    static class LatencyRecordingProxyFactory implements org.aopalliance.intercept.MethodInterceptor {
 
-    private Object addLatencyMeasurementInterceptorAop(Object bean, Class<?> clazz, MeasurementService measurementService, MetricRecordService metricRecordService) {
-        log.info("Proxying the {} class by ProxyFactory", clazz);
-//        This works for CGLib proxied bean(For target class implementing interface)
-        ProxyFactory proxyFactory = new ProxyFactory(bean);
-        var methodInterceptor = new RecordLatencyAopInterceptor(measurementService, metricRecordService);
-        proxyFactory.addAdvice(methodInterceptor);
-        return proxyFactory.getProxy();
-    }
+        private final Object measurementServiceMutex = new Object();
+        private final Object metricRecordServiceMutex = new Object();
+        private MeasurementService measurementService;
+        private MetricRecordService metricRecordService;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+        private final Object target;
+        private final ProxyFactory proxyFactory;
+        private final ObjectProvider<MeasurementService> _measurementServiceProvider;
+        private final ObjectProvider<MetricRecordService> _metricRecordServiceProvider;
 
-    @RequiredArgsConstructor
-    private static class RecordLatencyAopInterceptor implements org.aopalliance.intercept.MethodInterceptor {
-
-        private final MeasurementService measurementService;
-        private final MetricRecordService metricRecordService;
+        LatencyRecordingProxyFactory(Object target, ObjectProvider<MeasurementService> measurementServiceProvider, ObjectProvider<MetricRecordService> metricRecordServiceProvider) {
+            this.proxyFactory = new ProxyFactory(target);
+            this.target = target;
+            _measurementServiceProvider = measurementServiceProvider;
+            _metricRecordServiceProvider = metricRecordServiceProvider;
+        }
 
         @Nullable
         @Override
         public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
-            log.info("[BPP-aop interceptor] {}", invocation);
-            if (AnnotationUtils.getAnnotation(invocation.getMethod(), RecordMetric.class) == null) {
+            log.trace("[BPP-? interceptor] {}", invocation);
+            var invokationMethod = invocation.getMethod();
+            var declaredMethod = target.getClass().getDeclaredMethod(invokationMethod.getName(), invokationMethod.getParameterTypes());
+            var latencyAnnotation = AnnotationUtils.getAnnotation(declaredMethod, TARGET_ANNOTATION);
+            if (latencyAnnotation == null) {
                 return invocation.proceed();
             }
-            log.debug("[BPP-aop interceptor] Track latency for {}", invocation.getMethod().getName());
-            var measured = measurementService.measure(invocation::proceed);
-            log.debug("[BPP-aop interceptor] Measured latency for {} is {} ns", invocation.getMethod().getName(), measured.getNanos());
+            log.info("[BPP-? interceptor] Track latency for '{}'", invokationMethod.getName());
+            var measured = getMeasurementService().measure(invocation::proceed);
+            log.info("[BPP-? interceptor] Measured latency for '{}' is {} ns", invokationMethod.getName(), measured.getNanos());
 
             // Method Information and send metric
-
-            var latencyAnnotation = invocation.getMethod().getAnnotation(RecordMetric.class);
             String metricName = latencyAnnotation.metric().getMetricName();
             Tag[] tags = Arrays.stream(latencyAnnotation.tags())
                     .map(TelemetryTag::getTags)
                     .flatMap(Arrays::stream)
                     .toArray(Tag[]::new);
-            metricRecordService.recordLatency(metricName, tags, Duration.of(measured.getNanos(), ChronoUnit.NANOS));
+            getMetricRecordService().recordLatency(metricName, tags, Duration.of(measured.getNanos(), ChronoUnit.NANOS));
             return measured.value();
         }
-    }
 
-    @RequiredArgsConstructor
-    private static class RecordLatencyInterceptor implements MethodInterceptor {
+        Object getProxy() {
+            proxyFactory.addAdvice(this);
+            return proxyFactory.getProxy();
+        }
 
-        private final MeasurementService measurementService;
-        private final MetricRecordService metricRecordService;
-
-        @Override
-        public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-            if (AnnotationUtils.getAnnotation(method, RecordMetric.class) == null) {
-                return method.invoke(obj, args);
+        private MetricRecordService getMetricRecordService() {
+            if (metricRecordService != null) {
+                return metricRecordService;
+            } else {
+                synchronized (metricRecordServiceMutex) {
+                    if (metricRecordService != null) {
+                        return metricRecordService;
+                    }
+                    metricRecordService = _metricRecordServiceProvider.getObject();
+                }
             }
-            log.debug("[BPP-CGLib] Track latency for {}", proxy);
-            var measured = measurementService.measure(() -> proxy.invokeSuper(obj, args));
-            log.debug("[BPP-CGLib] Measured latency for {} is {} ns", proxy, measured.getNanos());
+            return metricRecordService;
+        }
 
-            // Method Information and send metric
-
-            var latencyAnnotation = method.getAnnotation(RecordMetric.class);
-            String metricName = latencyAnnotation.metric().getMetricName();
-            Tag[] tags = Arrays.stream(latencyAnnotation.tags())
-                    .map(TelemetryTag::getTags)
-                    .flatMap(Arrays::stream)
-                    .toArray(Tag[]::new);
-            metricRecordService.recordLatency(metricName, tags, Duration.of(measured.getNanos(), ChronoUnit.NANOS));
-            return measured.value();
+        private MeasurementService getMeasurementService() {
+            if (measurementService != null) {
+                return measurementService;
+            } else {
+                synchronized (measurementServiceMutex) {
+                    if (measurementService != null) {
+                        return measurementService;
+                    }
+                    measurementService = _measurementServiceProvider.getObject();
+                }
+            }
+            return measurementService;
         }
     }
+
+//    private Object addLatencyMeasurementInterceptorAop(Object bean) {
+//        log.info("Proxying the {} class by ProxyFactory", bean.getClass());
+//
+//        ProxyFactory proxyFactory = new ProxyFactory(bean);
+//        proxyFactory.addAdvice(new org.aopalliance.intercept.MethodInterceptor() {
+//
+//
+//            @Nullable
+//            @Override
+//            public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
+//
+//                log.trace("[BPP-? interceptor] {}", invocation);
+//                var invokationMethod = invocation.getMethod();
+//                var declaredMethod = bean.getClass().getDeclaredMethod(invokationMethod.getName(), invokationMethod.getParameterTypes());
+//                var latencyAnnotation = AnnotationUtils.getAnnotation(declaredMethod, TARGET_ANNOTATION);
+//                if (latencyAnnotation == null) {
+//                    return invocation.proceed();
+//                }
+//                log.info("[BPP-? interceptor] Track latency for {}", invokationMethod.getName());
+//                var measured = getMeasurementService().measure(invocation::proceed);
+//                log.info("[BPP-? interceptor] Measured latency for {} is {} ns", invokationMethod.getName(), measured.getNanos());
+//
+//                // Method Information and send metric
+//                String metricName = latencyAnnotation.metric().getMetricName();
+//                Tag[] tags = Arrays.stream(latencyAnnotation.tags())
+//                        .map(TelemetryTag::getTags)
+//                        .flatMap(Arrays::stream)
+//                        .toArray(Tag[]::new);
+//                getMetricRecordService().recordLatency(metricName, tags, Duration.of(measured.getNanos(), ChronoUnit.NANOS));
+//                return measured.value();
+//            }
+//
+//            public MetricRecordService getMetricRecordService() {
+//                if (metricRecordService != null) {
+//                    return metricRecordService;
+//                } else {
+//                    synchronized (metricRecordServiceMutex) {
+//                        if (metricRecordService != null) {
+//                            return metricRecordService;
+//                        }
+//                        metricRecordService = metricRecordServiceProvider.getObject();
+//                    }
+//                }
+//                return metricRecordService;
+//            }
+//
+//            public MeasurementService getMeasurementService() {
+//                if (measurementService != null) {
+//                    return measurementService;
+//                } else {
+//                    synchronized (measurementServiceMutex) {
+//                        if (measurementService != null) {
+//                            return measurementService;
+//                        }
+//                        measurementService = measurementServiceProvider.getObject();
+//                    }
+//                }
+//                return measurementService;
+//            }
+//        });
+//
+//        Object proxy = proxyFactory.getProxy();
+//        log.info("Bean {} is proxied at {}", bean.getClass(), proxy.getClass());
+//        return proxy;
+//    }
+
+//    private Object addLatencyMeasurementInterceptor(Object bean) {
+//        MeasurementService measurementService = measurementServiceProvider.getObject();
+//        MetricRecordService metricRecordService = metricRecordServiceProvider.getObject();
+//        Enhancer enhancer = new Enhancer();
+//        enhancer.setSuperclass(bean.getClass());
+//        enhancer.setInterfaces(bean.getClass().getInterfaces());
+//// FIXME is not working
+//        enhancer.setCallback(new MethodInterceptor() {
+//            public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
+////                log.trace("[BPP-CGLib] interceptor {}", proxy);
+//                if (AnnotationUtils.getAnnotation(method, TARGET_ANNOTATION) == null) {
+//                    return proxy.invoke(bean, args);
+//                }
+//                log.debug("[BPP-CGLib] Track latency for '{}'", method.getName());
+//                var measured = measurementService.measure(() -> proxy.invokeSuper(bean, args));
+//                log.debug("[BPP-CGLib] Measured latency for '{}' is {} ns", method.getName(), measured.getNanos());
+//
+//                // Method Information and send metric
+//
+//                var latencyAnnotation = method.getAnnotation(TARGET_ANNOTATION);
+//                String metricName = latencyAnnotation.metric().getMetricName();
+//                Tag[] tags = Arrays.stream(latencyAnnotation.tags())
+//                        .map(TelemetryTag::getTags)
+//                        .flatMap(Arrays::stream)
+//                        .toArray(Tag[]::new);
+//                metricRecordService.recordLatency(metricName, tags, Duration.of(measured.getNanos(), ChronoUnit.NANOS));
+//                return measured.value();
+//            }
+//        });
+//        return enhancer.create();
+//    }
 }

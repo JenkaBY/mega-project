@@ -22,6 +22,9 @@ logging:
     org.apache.kafka.clients.consumer.internals.SubscriptionState: WARN
     org.springframework.kafka.listener.KafkaMessageListenerContainer: WARN
     io.confluent.kafka.serializers.KafkaAvroSerializerConfig: WARN
+    io.confluent.kafka.serializers.KafkaAvroDeserializerConfig: WARN
+    org.apache.kafka.clients.consumer.ConsumerConfig: WARN
+    org.apache.kafka.clients.admin.AdminClientConfig: WARN
     org.apache.kafka.common.telemetry.internals.KafkaMetricsCollector: WARN
     org.apache.kafka.clients.NetworkClient: WARN
     org.apache.kafka.clients.Metadata: WARN
@@ -29,8 +32,9 @@ logging:
     com.github.jenkaby.service.support.advice.LatencyTrackAdvice: DEBUG
     com.github.jenkaby.service.support.MetricRecordService: DEBUG
     com.github.jenkaby.presentation.controller.DelayController: DEBUG
-    com.github.jenkaby.config.telemetry.RecordLatencyBeanPostProcessor: DEBUG
-    com.github.jenkaby.service.BasicClientDelayService: DEBUG
+    com.github.jenkaby.config.telemetry.RecordLatencyBeanPostProcessor: TRACE
+    com.github.jenkaby.service.delay.*: DEBUG
+    com.github.jenkaby.config.telemetry.*: TRACE
 app:
   kafka:
     dlt:

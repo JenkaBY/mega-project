@@ -22,6 +22,7 @@ public class MeasurementService {
             timer.stop();
             return new MeasuredValue<>(object, timer.getTotalTimeNanos());
         } catch (Throwable e) {
+            log.error("Error occurred {}. {}", e.getClass(), e.getMessage());
             timer.stop();
             return new MeasuredValue<>(e, timer.getTotalTimeNanos());
         }

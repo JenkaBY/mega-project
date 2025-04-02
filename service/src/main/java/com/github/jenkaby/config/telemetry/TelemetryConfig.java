@@ -1,5 +1,7 @@
 package com.github.jenkaby.config.telemetry;
 
+import com.github.jenkaby.service.support.BasicMetricRecordService;
+import com.github.jenkaby.service.support.MetricRecordService;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
@@ -13,5 +15,10 @@ public class TelemetryConfig {
     @Bean
     public TimedAspect timedAspect(MeterRegistry registry) {
         return new TimedAspect(registry);
+    }
+
+    @Bean
+    public MetricRecordService metricRecordService(MeterRegistry registry) {
+        return new BasicMetricRecordService(registry);
     }
 }

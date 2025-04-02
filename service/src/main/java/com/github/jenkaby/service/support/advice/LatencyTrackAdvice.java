@@ -32,9 +32,9 @@ public class LatencyTrackAdvice {
     @Around("@annotation(com.github.jenkaby.service.support.annotation.TrackLatency)")
     public Object measureLatency(ProceedingJoinPoint joinPoint) throws Throwable {
         Signature sig = joinPoint.getSignature();
-        log.debug("[Annotation] Track latency for {}", sig.toShortString());
+        log.debug("[AOP Annotation] Track latency for {}", sig.toShortString());
         var measured = measurementService.measure(joinPoint::proceed);
-        log.debug("[Annotation] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
+        log.debug("[AOP Annotation] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
 
         // Method Information and send metric
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -50,12 +50,12 @@ public class LatencyTrackAdvice {
         return measured.value();
     }
 
-    @Around("execution(* com.github.jenkaby.service.ClientDelayService.aopWrappedInvokeMakeDelay(..))")
+    @Around("execution(* com.github.jenkaby.service.delay.AopExecutionAroundClientDelayService.delegateInvocation(..))")
     public Object measureLatencyForAopWrapped(ProceedingJoinPoint joinPoint) throws Throwable {
         Signature sig = joinPoint.getSignature();
-        log.debug("[Execution] Track latency for {}", sig.toShortString());
+        log.debug("[AOP Execution] Track latency for {}", sig.toShortString());
         var measured = measurementService.measure(joinPoint::proceed);
-        log.debug("[Execution] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
+        log.debug("[AOP Execution] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
 
         // send metric
         String metricName = TelemetryCounter.DELAY_SERVICE_LATENCY.getMetricName();

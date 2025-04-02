@@ -31,7 +31,7 @@ public class MetricsStep {
             var expectedMetric = registry.find(metric).tags(tags).timer();
             debugMetrics();
             assertThat(expectedMetric).isNotNull();
-            assertThat(expectedMetric.totalTime(TimeUnit.MILLISECONDS)).isCloseTo(expectedLatencyMs, threshold2ms);
+            assertThat(expectedMetric.mean(TimeUnit.MILLISECONDS)).isCloseTo(expectedLatencyMs, threshold2ms);
         });
     }
 
