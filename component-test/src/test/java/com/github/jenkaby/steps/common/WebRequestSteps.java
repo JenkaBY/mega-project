@@ -15,10 +15,13 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.lang.Nullable;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,23 +34,35 @@ public class WebRequestSteps {
     @LocalServerPort
     private final int port;
 
-    @When("a request has been made to {string} endpoint")
-    public void requestHasBeenMadeToEndpoint(String endpoint) {
-        log.info("++TxN is active: {}", TransactionSynchronizationManager.isActualTransactionActive());
-        scenarioContext.setResponse(restClient.getForEntity(endpoint, String.class));
+    @When("a {httpMethod} request has been made to {string} endpoint")
+    public void requestHasBeenMadeToEndpoint(HttpMethod method, String endpoint) {
+        requestHasBeenMadeToEndpointTimes(method, 1, endpoint, null);
     }
 
     @When("a {httpMethod} request has been made to {string} endpoint with query parameters")
     public void requestHasBeenMadeToEndpoint(HttpMethod method,
                                              String endpoint,
                                              @Transpose DataTable queryParams) {
+        requestHasBeenMadeToEndpointTimes(method, 1, endpoint, queryParams);
+    }
+
+    @When("a {httpMethod} request has been made {int} times to {string} endpoint with query parameters")
+    public void requestHasBeenMadeToEndpointTimes(HttpMethod method,
+                                                  int times,
+                                                  String endpoint,
+                                                  @Nullable @Transpose DataTable queryParams) {
 
         var request = new HttpEntity<>(scenarioContext.getRequestBody());
         var uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + endpoint);
-        queryParams.asMap().forEach(uriBuilder::queryParam);
+        Optional.ofNullable(queryParams)
+                .map(DataTable::asMap)
+                .orElse(Map.of())
+                .forEach(uriBuilder::queryParam);
         var uri = uriBuilder.build().toUri();
-        var response = restClient.exchange(uri, method, request, String.class);
-        log.info("Response : {}", response);
+        var response = IntStream.range(0, times).mapToObj(i -> restClient.exchange(uri, method, request, String.class))
+                .peek(resp -> log.info("Response : {}", resp))
+                .toList().getLast();
+        log.info("Last Response : {}", response);
         scenarioContext.setResponse(response);
     }
 

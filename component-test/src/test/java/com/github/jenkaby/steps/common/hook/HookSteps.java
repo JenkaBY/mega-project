@@ -5,6 +5,7 @@ import com.github.jenkaby.context.LocalMessagesStore;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.BeforeAll;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.awaitility.Awaitility;
@@ -17,6 +18,13 @@ import java.util.concurrent.TimeUnit;
 public class HookSteps {
 
     private final LocalMessagesStore store;
+    private final MeterRegistry meterRegistry;
+
+    @After
+    public void clearMeterRegistry() {
+        log.info("Clearing MeterRegistry");
+        meterRegistry.clear();
+    }
 
     @BeforeAll
     public static void setUp() {

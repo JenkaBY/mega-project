@@ -35,11 +35,6 @@ public class NativeClientDelayService implements ClientDelayService {
         var latency = Duration.ofNanos(measured.getNanos());
         metricRecordService.recordLatency(METRIC, TAGS, latency);
         log.info("[Native] recorded latency {} ns", latency.toNanos());
-        try {
-            log.debug("Is there any measured value ? {}", measured.value() == null);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

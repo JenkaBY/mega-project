@@ -35,6 +35,9 @@ logging:
     com.github.jenkaby.config.telemetry.RecordLatencyBeanPostProcessor: TRACE
     com.github.jenkaby.service.delay.*: DEBUG
     com.github.jenkaby.config.telemetry.*: TRACE
+    com.github.jenkaby.service.delay.ClientDelayServiceContext: INFO
+    com.github.jenkaby.steps.*: INFO
+    com.github.jenkaby.service.support.ProxyType: DEBUG
 app:
   kafka:
     dlt:

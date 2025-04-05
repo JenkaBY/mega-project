@@ -21,7 +21,7 @@ public class MetricsStep {
 
     private final MeterRegistry registry;
 
-    @Then("measured {string} metric has been recorded at ~{long} ms with {tags} tags")
+    @Then("measured average {string} metric has been recorded at ~{long} ms with {tags} tags")
     public void measuredLatencyMetricHasRecordedDelayMs(String metric, long expectedLatencyMs, List<Tag> tags) {
         if (metric.isBlank()) {
             return;

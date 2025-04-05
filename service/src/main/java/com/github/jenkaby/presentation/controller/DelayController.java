@@ -35,11 +35,20 @@ public class DelayController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/bpp")
-    public String invokeBppExecutionLatencyMeasure(
+    @GetMapping("/bpp-dynamic")
+    public String invokeBppDynamicExecutionLatencyMeasure(
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
-        log.info("Incoming GET request for /bpp");
-        getClientByTag(TelemetryTag.TYPE_BPP).delegateInvocation(delay);
+        log.info("Incoming GET request for /bpp-dynamic");
+        getClientByTag(TelemetryTag.TYPE_BPP_DYNAMIC_PROXY).delegateInvocation(delay);
+        return response(delay);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/bpp-cglib")
+    public String invokeBppCgLibExecutionLatencyMeasure(
+            @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
+        log.info("Incoming GET request for /bpp-cglib");
+        getClientByTag(TelemetryTag.TYPE_BPP_CGLIB_PROXY).delegateInvocation(delay);
         return response(delay);
     }
 

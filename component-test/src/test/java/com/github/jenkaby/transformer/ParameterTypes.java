@@ -2,6 +2,7 @@ package com.github.jenkaby.transformer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jenkaby.service.support.ProxyType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
 import io.cucumber.java.DefaultDataTableEntryTransformer;
 import io.cucumber.java.DefaultParameterTransformer;
@@ -29,6 +30,11 @@ public class ParameterTypes {
     @ParameterType("GET|POST|PUT|PATCH|DELETE")
     public HttpMethod httpMethod(String methodName) {
         return HttpMethod.valueOf(methodName);
+    }
+
+    @ParameterType("JDK_DYNAMIC|CGLIB|NONE")
+    public ProxyType proxyType(String type) {
+        return ProxyType.valueOf(type);
     }
 
     @SneakyThrows

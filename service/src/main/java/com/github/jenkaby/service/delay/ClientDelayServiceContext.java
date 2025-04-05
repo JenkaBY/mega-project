@@ -17,7 +17,7 @@ public class ClientDelayServiceContext {
 
     public ClientDelayServiceContext(List<ClientDelayService> implementations) {
         this.context = implementations.stream()
-                .peek(impl -> log.debug("class {}", impl.getClass()))
+                .peek(impl -> log.debug("** {}", impl.getClass()))
                 .collect(Collectors.toMap(ClientDelayService::getImplementationType, Function.identity()));
     }
 
