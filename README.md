@@ -19,6 +19,7 @@ Implemented:
 - [x] Bean Post Processor(BPP)(CGLib proxy type)
 - [x] Bean Post Processor(BPP)(JDK Dynamic proxy type)
 - [x] @Timed Micrometer
+- [x] improve GitHub CI. Parallelize test executions, cache build and so on
 
 In progress
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
@@ -33,7 +34,6 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Spring Security(JWT, Basic)
-- [ ] improve GitHub CI. Parallelize test executions, cache build and so on
 
 ### Notes:
  The docker compose file contains several services that use host network 
