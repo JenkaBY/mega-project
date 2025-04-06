@@ -44,3 +44,6 @@ app:
       retry:
         interval: 500
         max-attempts: 2
+  test:
+    latency:
+      validation-threshold: 3ms

@@ -1,9 +1,11 @@
 package com.github.jenkaby;
 
+import com.github.jenkaby.config.TestPropertiesConfig;
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,6 +32,7 @@ public class RunComponentTests {
     @ActiveProfiles({"test", "createTopics"})
     @SpringBootTest(classes = MegaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
     @CucumberContextConfiguration
+    @EnableConfigurationProperties(TestPropertiesConfig.LatencyProperties.class)
     public static class ApplicationContextTestConfiguration {
 
         @ServiceConnection

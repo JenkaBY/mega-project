@@ -22,3 +22,5 @@ jobs:
           cache: 'gradle'
       - name: Test with Gradle
         run: ./gradlew clean test
+        env:
+          APP_TEST_LATENCY_VALIDATION_THRESHOLD: 5ms

@@ -1,5 +1,6 @@
 package com.github.jenkaby.steps;
 
+import com.github.jenkaby.config.TestPropertiesConfig;
 import io.cucumber.java.en.Then;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
@@ -20,18 +21,21 @@ import static org.awaitility.Awaitility.await;
 public class MetricsStep {
 
     private final MeterRegistry registry;
+    private final TestPropertiesConfig.LatencyProperties latencyTestConfig;
 
     @Then("measured average {string} metric has been recorded at ~{long} ms with {tags} tags")
     public void measuredLatencyMetricHasRecordedDelayMs(String metric, long expectedLatencyMs, List<Tag> tags) {
         if (metric.isBlank()) {
             return;
         }
-        var threshold2ms = Offset.offset(3d);
+        long thresholdConfigMs = latencyTestConfig.getValidationThreshold().toMillis();
+        log.info("THRESHOLD {} ms", thresholdConfigMs);
+        var thresholdMs = Offset.offset((double) thresholdConfigMs);
         await().atMost(Duration.ofMillis(1_000)).untilAsserted(() -> {
             var expectedMetric = registry.find(metric).tags(tags).timer();
             debugMetrics();
             assertThat(expectedMetric).isNotNull();
-            assertThat(expectedMetric.mean(TimeUnit.MILLISECONDS)).isCloseTo(expectedLatencyMs, threshold2ms);
+            assertThat(expectedMetric.mean(TimeUnit.MILLISECONDS)).isCloseTo(expectedLatencyMs, thresholdMs);
         });
     }
 
