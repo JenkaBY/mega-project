@@ -1,6 +1,7 @@
 package com.github.jenkaby.presentation.controller;
 
 import com.github.jenkaby.config.telemetry.TelemetryTag;
+import com.github.jenkaby.service.DelayService;
 import com.github.jenkaby.service.delay.ClientDelayService;
 import com.github.jenkaby.service.delay.ClientDelayServiceContext;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class DelayController {
 
     private final ClientDelayServiceContext clientDelayServiceContext;
+    private final DelayService delayService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/aop-annotation")
@@ -67,6 +69,15 @@ public class DelayController {
             @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
         log.info("Incoming GET request for /timed-micrometer");
         getClientByTag(TelemetryTag.TYPE_TIMED).delegateInvocation(delay);
+        return response(delay);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/without-measurement")
+    public String invokeClientDelayService(
+            @RequestParam(name = "delay", defaultValue = "1", required = false) long delay) {
+        log.info("Incoming GET request for /without-measurement");
+        delayService.makeDelay(delay);
         return response(delay);
     }
 
