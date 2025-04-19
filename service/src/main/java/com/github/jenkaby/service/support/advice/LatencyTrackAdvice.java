@@ -34,7 +34,7 @@ public class LatencyTrackAdvice {
         Signature sig = joinPoint.getSignature();
         log.debug("[AOP Annotation] Track latency for {}", sig.toShortString());
         var measured = measurementService.measure(joinPoint::proceed);
-        log.debug("[AOP Annotation] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
+        log.info("[AOP Annotation] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
 
         // Method Information and send metric
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -55,7 +55,7 @@ public class LatencyTrackAdvice {
         Signature sig = joinPoint.getSignature();
         log.debug("[AOP Execution] Track latency for {}", sig.toShortString());
         var measured = measurementService.measure(joinPoint::proceed);
-        log.debug("[AOP Execution] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
+        log.info("[AOP Execution] Measured latency for {} is {} ns", sig.toShortString(), measured.getNanos());
 
         // send metric
         String metricName = TelemetryCounter.DELAY_SERVICE_LATENCY.getMetricName();

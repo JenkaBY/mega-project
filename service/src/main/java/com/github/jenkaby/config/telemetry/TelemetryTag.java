@@ -18,11 +18,19 @@ public enum TelemetryTag {
     private final Tag[] tags;
 
     public static class Constants {
-        public static final Tag[] TIMED_TAGS = {Tag.of("type", "timed")};
-        public static final Tag[] NATIVE_TAGS = {Tag.of("type", "native")};
-        public static final Tag[] BPP_DYNAMIC_TAGS = {Tag.of("type", "bpp-dynamic")};
-        public static final Tag[] BPP_CGLIB_TAGS = {Tag.of("type", "bpp-cglib")};
-        public static final Tag[] AOP_AROUND_EXECUTION_TAGS = {Tag.of("type", "aop-execution")};
-        public static final Tag[] AOP_ANNOTATION_TAGS = {Tag.of("type", "aop-annotation")};
+        public static final String TYPE = "type";
+        public static final String TIMED_MICROMETER = "timed-micrometer";
+        public static final String NATIVE = "native";
+        public static final String BPP_DYNAMIC = "bpp-dynamic";
+        public static final String BPP_CGLIB = "bpp-cglib";
+        public static final String AOP_EXECUTION = "aop-execution";
+        public static final String AOP_ANNOTATION = "aop-annotation";
+
+        public static final Tag[] TIMED_TAGS = {Tag.of(TYPE, TIMED_MICROMETER)};
+        public static final Tag[] NATIVE_TAGS = {Tag.of(TYPE, NATIVE)};
+        public static final Tag[] BPP_DYNAMIC_TAGS = {Tag.of(TYPE, BPP_DYNAMIC)};
+        public static final Tag[] BPP_CGLIB_TAGS = {Tag.of(TYPE, BPP_CGLIB)};
+        public static final Tag[] AOP_AROUND_EXECUTION_TAGS = {Tag.of(TYPE, AOP_EXECUTION)};
+        public static final Tag[] AOP_ANNOTATION_TAGS = {Tag.of(TYPE, AOP_ANNOTATION)};
     }
 }

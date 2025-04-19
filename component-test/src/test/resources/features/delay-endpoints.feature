@@ -9,13 +9,13 @@ Feature: Describe endpoints related to Delay controller
     Then the response status is 200
     And measured average '<latencyMetric>' metric has been recorded at ~<delay> ms with <tags> tags
     Examples:
-      | url                         | delay | latencyMetric         | tags                      |
-      | /api/delay/aop-annotation   | 5     | delay.service.latency | {"type":"aop-annotation"} |
-      | /api/delay/aop-execution    | 5     | delay.service.latency | {"type":"aop-execution"}  |
-      | /api/delay/bpp-dynamic      | 5     | delay.service.latency | {"type":"bpp-dynamic"}    |
-      | /api/delay/bpp-cglib        | 5     | delay.service.latency | {"type":"bpp-cglib"}      |
-      | /api/delay/timed-micrometer | 5     | delay.service.latency | {"type":"timed"}          |
-      | /api/delay/native           | 5     |                       |                           |
+      | url                         | delay | latencyMetric         | tags                        |
+      | /api/delay/aop-annotation   | 5     | delay.service.latency | {"type":"aop-annotation"}   |
+      | /api/delay/aop-execution    | 5     | delay.service.latency | {"type":"aop-execution"}    |
+      | /api/delay/bpp-dynamic      | 5     | delay.service.latency | {"type":"bpp-dynamic"}      |
+      | /api/delay/bpp-cglib        | 5     | delay.service.latency | {"type":"bpp-cglib"}        |
+      | /api/delay/timed-micrometer | 5     | delay.service.latency | {"type":"timed-micrometer"} |
+      | /api/delay/native           | 5     | delay.service.latency | {"type":"native"}           |
 
   @run
   Scenario Outline: The '<url>' should respond OK

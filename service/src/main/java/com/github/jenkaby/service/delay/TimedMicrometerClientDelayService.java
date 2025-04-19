@@ -1,5 +1,6 @@
 package com.github.jenkaby.service.delay;
 
+import com.github.jenkaby.config.telemetry.TelemetryCounter;
 import com.github.jenkaby.config.telemetry.TelemetryTag;
 import com.github.jenkaby.service.DelayService;
 import io.micrometer.core.annotation.Timed;
@@ -16,7 +17,8 @@ public class TimedMicrometerClientDelayService implements ClientDelayService {
 
     private final DelayService delayService;
 
-    @Timed(value = "delay.service.latency", extraTags = {"type", "timed"})
+    @Timed(value = TelemetryCounter.Constants.DELAY_SERVICE_LATENCY,
+            extraTags = {TelemetryTag.Constants.TYPE, TelemetryTag.Constants.TIMED_MICROMETER})
     @Override
     public void delegateInvocation(long delayMs) {
         log.debug("[@Timed micrometer] Start delay at {}", LocalDateTime.now());

@@ -12,7 +12,7 @@ public class DelayService {
             log.info("Sleeping {} ms", sleepMs);
             Thread.sleep(sleepMs);
         } catch (InterruptedException e) {
-            log.info("An error occurred", e);
+            log.warn("An error occurred", e);
         }
     }
 }
