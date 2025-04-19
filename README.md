@@ -34,6 +34,7 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Spring Security(JWT, Basic)
+- [ ] Improve README.md files
 
 ### Notes:
  The docker compose file contains several services that use host network 
@@ -53,7 +54,7 @@ Additionally, it's needed to prometheus config to be reconfigured according to d
 Start infrastructure(db, kafka's services):
 
 ```shell
-docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' up -d
+docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' --profile 'observability' up -d
 ```
 
 To stop infrastructure(db, kafka's services):
@@ -76,3 +77,15 @@ docker compose --file ./docker/docker-compose.yaml --profile 'observability' --p
 
 ### Gracefully shutdown
 To gracefully shutdown application, send POST localhost:8080/actuator/shutdown
+
+```shell
+curl -X POST http://localhost:8080/actuator/shutdown -H "Content-Type: application/json"
+```
+
+### Performance test (Load test)
+
+To run gatling test see the file [README.md](./load-test/README.md)
+
+### Component test (Load test)
+
+To run component test see the file [README.md](./component-test/README.md)

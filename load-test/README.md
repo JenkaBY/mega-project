@@ -12,7 +12,7 @@ In order to run the test, it needs to execute the command from the **ROOT** proj
  ./gradlew -b ./load-test/build.gradle gatlingRun --simulation com.github.jenkaby.loadtest.DDOSSimulation
 ```
 
-OR from here(IntelijiIdea)
+OR from here(IntelliJIdea)
 
 ```shell
 cd .. && ./gradlew -b ./load-test/build.gradle gatlingRun --simulation com.github.jenkaby.loadtest.DDOSSimulation
