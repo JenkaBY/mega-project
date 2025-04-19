@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'io.gatling.gradle' version '3.13.5.2'
+}
+
+group = 'com.github.jenkaby.gatling'
+version = '0.0.1-SNAPSHOT'
+
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    gatling {
+//        java.srcDirs = ['java'] // as a single source of simulations.
+//        resources.srcDirs = ['resources'] // as a single source of Gatling resources.
+    }
+}
+
+dependencies {
+//    the version is taken from the gatling plugin
+    gatling 'io.gatling:gatling-http-java'
+    gatling 'io.gatling:gatling-core-java'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+gatling {
+//   gatlingVersion = '3.13.5'
+    jvmArgs = [
+            '-server', '-Xms512M', '-Xmx512M',
+            '--add-opens=java.base/java.lang=ALL-UNNAMED',
+            '--add-opens=java.base/java.util=ALL-UNNAMED'
+    ]
+    systemProperties = ['file.encoding': 'UTF-8']
+    // do not include classes and resources from src/main
+    includeMainOutput = true
+    // do not include classes and resources from src/test
+    includeTestOutput = true
+}

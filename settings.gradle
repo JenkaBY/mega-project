@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = 'mega-project'
-include 'service', 'component-test'
+include 'service', 'component-test', 'load-test'
