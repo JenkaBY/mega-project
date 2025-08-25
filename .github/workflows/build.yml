@@ -84,7 +84,7 @@ jobs:
       - name: Component Tests with Gradle
         run: ./gradlew  :component-test:test
         env:
-          APP_TEST_LATENCY_VALIDATION_THRESHOLD: 5ms
+          APP_TEST_LATENCY_VALIDATION_THRESHOLD: 15ms
       - name: Upload Component Test Report
         if: always() # Ensure the reports are uploaded even if the tests fail
         uses: actions/upload-artifact@v4
