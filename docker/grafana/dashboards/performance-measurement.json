@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -100,7 +100,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -178,7 +178,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "expr": "rate(delay_service_latency_seconds_sum{application=\"mega-application\"}[$__rate_interval])",
@@ -193,7 +193,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -279,7 +279,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "expr": "rate(delay_service_latency_seconds_sum{application=\"mega-application\"}[$__rate_interval])",
@@ -294,7 +294,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -374,7 +374,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "expr": "rate(delay_service_latency_seconds_sum{application=\"mega-application\"}[$__rate_interval])/rate(delay_service_latency_seconds_count{application=\"mega-application\"}[$__rate_interval])",
@@ -389,7 +389,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -501,7 +501,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -514,7 +514,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -528,7 +528,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "expr": "rate(http_server_requests_seconds_sum{application=\"mega-application\", uri=~\"^/api/delay/.*\"}[$__rate_interval])",
@@ -544,7 +544,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "uid": "ds-default-prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -676,7 +676,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -689,7 +689,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "ds-default-prometheus"
           },
           "editorMode": "code",
           "exemplar": false,
