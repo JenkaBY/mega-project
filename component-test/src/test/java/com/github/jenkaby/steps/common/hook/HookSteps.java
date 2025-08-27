@@ -2,6 +2,7 @@ package com.github.jenkaby.steps.common.hook;
 
 import com.github.jenkaby.RunComponentTests;
 import com.github.jenkaby.context.LocalMessagesStore;
+import com.github.jenkaby.context.ScenarioContext;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.BeforeAll;
@@ -19,6 +20,7 @@ public class HookSteps {
 
     private final LocalMessagesStore store;
     private final MeterRegistry meterRegistry;
+    private final ScenarioContext scenarioContext;
 
     @After
     public void clearMeterRegistry() {
@@ -53,6 +55,7 @@ public class HookSteps {
     public void clearScenarioRecourses() {
         log.info("Clearing scenario resources...");
         store.clear();
+        scenarioContext.clearHeaders();
     }
 
     private static void speedUpAwaitility() {

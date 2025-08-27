@@ -11,6 +11,8 @@ dependencyCheckVersion = '11.1.1'
 # TODO upgrade version when app is migrated to SB3.4
 # see the compatibility matrix
 springdocOpenApiStarterWebUiVersion = '2.6.0'
+keycloakAdminClientVersion = '26.0.6'
+keycloakTestcontainerVersion = '3.8.0'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -20,6 +22,13 @@ sb-starter-aop = { module = 'org.springframework.boot:spring-boot-starter-aop' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
 spring-tx = { module = 'org.springframework:spring-tx' }
+
+# security
+sb-starter-auth2-resource-server = { module = 'org.springframework.boot:spring-boot-starter-oauth2-resource-server' }
+# security testing
+spring-security-oauth2-jose = { module = 'org.springframework.security:spring-security-oauth2-jose' }
+# it comes as transient dependency from testcontainers-keycloak
+keycloak-admin-client = { module = 'org.keycloak:keycloak-admin-client', version.ref = 'keycloakAdminClientVersion' }
 
 micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
@@ -51,6 +60,7 @@ awaitility = { module = 'org.awaitility:awaitility' }
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 test-container-kafka = { module = 'org.testcontainers:kafka' }
+test-container-keycloak = { module = 'com.github.dasniko:testcontainers-keycloak', version.ref = 'keycloakTestcontainerVersion' }
 
 cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
 # for junit 5
@@ -78,6 +88,9 @@ spring-web-application = [
     'liquibase',
     'mapstruct'
 ]
+spring-security = [
+    'sb-starter-auth2-resource-server',
+]
 spring-observability = [
     'micrometer-prometheus',
 ]
@@ -100,6 +113,7 @@ spring-test = [
     'test-container-junit',
     'test-container-postgres',
     'test-container-kafka',
+    'test-container-keycloak',
 ]
 
 cucumber-test = [

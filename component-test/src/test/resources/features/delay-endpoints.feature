@@ -1,6 +1,5 @@
 Feature: Describe endpoints related to Delay controller
 
-  @run
   Scenario Outline: The '<url>' should respond OK
     Given application is started
     When a GET request has been made 3 times to '<url>' endpoint with query parameters
@@ -17,7 +16,6 @@ Feature: Describe endpoints related to Delay controller
       | /api/delay/timed-micrometer | 5     | delay.service.latency | {"type":"timed-micrometer"} |
       | /api/delay/native           | 5     | delay.service.latency | {"type":"native"}           |
 
-  @run
   Scenario Outline: The '<url>' should respond OK
     Given application is started
     Then the '<beanName>' bean of the '<class>' class in the application context is <proxyType> proxy type

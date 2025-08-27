@@ -19,6 +19,8 @@ dependencies {
     testImplementation project(':service')
 
     testImplementation libs.sb.starter.web
+    testImplementation libs.spring.security.oauth2.jose
+
 //    used to wrap each scenario in txn
     testImplementation libs.spring.tx
     testImplementation libs.spring.kafka

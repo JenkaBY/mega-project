@@ -20,10 +20,10 @@ Implemented:
 - [x] Bean Post Processor(BPP)(JDK Dynamic proxy type)
 - [x] @Timed Micrometer
 - [x] improve GitHub CI. Parallelize test executions, cache build and so on
+- [x] Spring Security(JWT, ~~Basic~~)
 
-In progress
+  In progress
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
-
 
 TODO:
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
@@ -33,7 +33,6 @@ TODO:
 - [ ] QueryDSL or jooq
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
-- [ ] Spring Security(JWT, Basic)
 - [ ] Improve README.md files
 
 ### Notes:
@@ -81,6 +80,12 @@ To gracefully shutdown application, send POST localhost:8080/actuator/shutdown
 ```shell
 curl -X POST http://localhost:8080/actuator/shutdown -H "Content-Type: application/json"
 ```
+
+### Spring Security
+
+The app uses Spring Security and Keycloak for authentification and authorization. See the proper
+keycloak [realm config](/docker/keycloak/realms/local-realm.json)
+to request the secured endpoints.
 
 ### Performance test (Load test)
 

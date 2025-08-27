@@ -106,6 +106,23 @@ services:
 #      backend_net:
 #      default:
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: local-keycloak
+    command:
+      - start-dev
+      - --import-realm
+      - --http-port=9090
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    profiles: [ 'app' ]
+    network_mode: host
+    #    ports:
+    #      - "9090:9090"
+    volumes:
+      - ./keycloak/realms:/opt/keycloak/data/import
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
