@@ -4,4 +4,4 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090/realms/local
-#          jwk-set-uri: http://localhost:9090/realms/local/.well-known/openid-configuration
+          jwk-set-uri: http://localhost:9090/realms/local/.well-known/openid-configuration

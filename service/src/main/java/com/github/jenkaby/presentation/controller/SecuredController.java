@@ -53,6 +53,16 @@ public class SecuredController {
         );
     }
 
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/basic/has-roles/developer")
+    public Map<String, Object> onlyFoDevWithBasicAuth() {
+        log.info("[GET] Requested a secured endpoint for user having the 'developer' role + Basic Auth.");
+        return Map.of(
+                "status", "SUCCESS"
+        );
+    }
+
     @GetMapping("/i-am")
     public ResponseEntity<Object> whoAmI(JwtAuthenticationToken jwtAuthToken,
                                          @AuthenticationPrincipal Jwt principal) {

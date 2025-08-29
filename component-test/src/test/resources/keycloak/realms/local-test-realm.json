@@ -22,7 +22,7 @@
   ],
   "users": [
     {
-      "username": "testuser-bdd",
+      "username": "testuser-bearer",
       "email": "test.user@megaapp.com",
       "firstName": "MegaApp",
       "lastName": "User",

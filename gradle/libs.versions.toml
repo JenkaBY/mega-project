@@ -13,6 +13,7 @@ dependencyCheckVersion = '11.1.1'
 springdocOpenApiStarterWebUiVersion = '2.6.0'
 keycloakAdminClientVersion = '26.0.6'
 keycloakTestcontainerVersion = '3.8.0'
+wiremockSpringIntegrationVersion = '3.10.6'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -56,6 +57,7 @@ sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test'
 sb-testcontainers = { module = 'org.springframework.boot:spring-boot-testcontainers' }
 assertj-core = { module = 'org.assertj:assertj-core' }
 awaitility = { module = 'org.awaitility:awaitility' }
+spring-security-test = { module = 'org.springframework.security:spring-security-test' }
 
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
@@ -70,6 +72,7 @@ cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucum
 junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
+sb-wiremock = { module = 'org.wiremock.integrations:wiremock-spring-boot', version.ref = 'wiremockSpringIntegrationVersion' }
 
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
@@ -114,6 +117,8 @@ spring-test = [
     'test-container-postgres',
     'test-container-kafka',
     'test-container-keycloak',
+    'spring-security-test',
+    'sb-wiremock',
 ]
 
 cucumber-test = [

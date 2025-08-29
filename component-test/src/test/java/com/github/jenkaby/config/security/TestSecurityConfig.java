@@ -35,6 +35,7 @@ public class TestSecurityConfig {
         keycloakContainer.start();
 
         registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/" + realm);
+//        registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/" + realm + "/.well-known/openid-configuration");
         registry.add("keycloak.auth-server-url", () -> keycloakContainer.getAuthServerUrl());
 
         log.info("Keycloak HOST: {}", keycloakContainer.getHost());

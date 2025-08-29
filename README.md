@@ -34,6 +34,7 @@ TODO:
 - [ ] retryable schema registry (it should be on the main source
   soon https://github.com/confluentinc/schema-registry/pull/3424)
 - [ ] Improve README.md files
+- [ ] id "nebula.integtest" version "8.2.0" TODO Explore this
 
 ### Notes:
  The docker compose file contains several services that use host network 
