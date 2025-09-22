@@ -2,6 +2,8 @@ package com.github.jenkaby.presentation.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jenkaby.config.security.support.LoggedUser;
+import com.github.jenkaby.config.security.support.LoggedUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,9 +67,11 @@ public class SecuredController {
 
     @GetMapping("/i-am")
     public ResponseEntity<Object> whoAmI(JwtAuthenticationToken jwtAuthToken,
-                                         @AuthenticationPrincipal Jwt principal) {
+                                         @AuthenticationPrincipal Jwt principal,
+                                         @LoggedUser LoggedUserInfo userInfo) {
         log.info("[GET] Requested a who-am-i endpoint authorities authToken: {}", jwtAuthToken);
-        log.info("[GET] Requested a who-am-i endpoint authorities JWT: {}", principal);
+        log.info("[GET] Requested a who-am-i endpoint authorities JWT: {}", principal.getClaims());
+        log.info("[GET] Requested a who-am-i endpoint  Custom @method argument resolver: {}", userInfo);
         try {
             var jsonString = mapper.writeValueAsString(jwtAuthToken);
 //            log.info("IAM {}", jsonString);
