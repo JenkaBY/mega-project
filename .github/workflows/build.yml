@@ -11,9 +11,14 @@ on:
 permissions:
   contents: write
 
+env:
+  #  optimized args for CI environment
+  GRADLE_ARGS: "--no-daemon --console=plain --stacktrace"
+
 jobs:
   build:
     name: "Gradle build on JDK 21"
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -34,7 +39,7 @@ jobs:
         uses: gradle/actions/dependency-submission@v4
       #       Build and skip tests
       - name: Build only service with Gradle. Skip tests
-        run: ./gradlew clean :service:build -x :test -x :service:test -x :service:bootJar -x :component-test:build -x :component-test:test
+        run: ./gradlew clean :service:build -x :test -x :service:test -x :service:bootJar -x :component-test:build -x :component-test:test $GRADLE_ARGS
   unit-tests:
     name: "Gradle unit tests"
     needs: [ "build" ]
@@ -55,7 +60,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       #      Running Unit tests
       - name: Unit Tests with Gradle
-        run: ./gradlew :service:test
+        run: ./gradlew :service:test $GRADLE_ARGS
       - name: Upload Component Test Report
         if: always() # Ensure the reports are uploaded even if the tests fail
         uses: actions/upload-artifact@v4
@@ -82,7 +87,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       #      Running Component tests
       - name: Component Tests with Gradle
-        run: ./gradlew  :component-test:test
+        run: ./gradlew  :component-test:test $GRADLE_ARGS
         env:
           APP_TEST_LATENCY_VALIDATION_THRESHOLD: 15ms
       - name: Upload Component Test Report
