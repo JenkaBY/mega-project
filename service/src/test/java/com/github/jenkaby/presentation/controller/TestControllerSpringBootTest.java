@@ -79,7 +79,7 @@ class TestControllerSpringBootTest extends AbstractReusableDbTest {
             """
                     {
                       "issuer": "http://localhost:19090/realms/local",
-                      "authorization_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/auth",
+                      "authorization_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/auth",
                       "token_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/token",
                       "introspection_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/token/introspect",
                       "userinfo_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/userinfo",
@@ -340,7 +340,7 @@ class TestControllerSpringBootTest extends AbstractReusableDbTest {
                         "S256"
                       ],
                       "tls_client_certificate_bound_access_tokens": true,
-                      "revocation_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/revoke",
+                      "revocation_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/revoke",
                       "revocation_endpoint_auth_methods_supported": [
                         "private_key_jwt",
                         "client_secret_basic",
@@ -365,12 +365,12 @@ class TestControllerSpringBootTest extends AbstractReusableDbTest {
                       ],
                       "backchannel_logout_supported": true,
                       "backchannel_logout_session_supported": true,
-                      "device_authorization_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/auth/device",
+                      "device_authorization_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/auth/device",
                       "backchannel_token_delivery_modes_supported": [
                         "poll",
                         "ping"
                       ],
-                      "backchannel_authentication_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/ext/ciba/auth",
+                      "backchannel_authentication_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/ext/ciba/auth",
                       "backchannel_authentication_request_signing_alg_values_supported": [
                         "PS384",
                         "RS384",
@@ -384,16 +384,16 @@ class TestControllerSpringBootTest extends AbstractReusableDbTest {
                         "RS512"
                       ],
                       "require_pushed_authorization_requests": false,
-                      "pushed_authorization_request_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/ext/par/request",
+                      "pushed_authorization_request_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/ext/par/request",
                       "mtls_endpoint_aliases": {
-                        "token_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/token",
-                        "revocation_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/revoke",
-                        "introspection_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/token/introspect",
-                        "device_authorization_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/auth/device",
-                        "registration_endpoint": "http://localhost:9090/realms/local/clients-registrations/openid-connect",
-                        "userinfo_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/userinfo",
-                        "pushed_authorization_request_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/ext/par/request",
-                        "backchannel_authentication_endpoint": "http://localhost:9090/realms/local/protocol/openid-connect/ext/ciba/auth"
+                        "token_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/token",
+                        "revocation_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/revoke",
+                        "introspection_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/token/introspect",
+                        "device_authorization_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/auth/device",
+                        "registration_endpoint": "http://localhost:19090/realms/local/clients-registrations/openid-connect",
+                        "userinfo_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/userinfo",
+                        "pushed_authorization_request_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/ext/par/request",
+                        "backchannel_authentication_endpoint": "http://localhost:19090/realms/local/protocol/openid-connect/ext/ciba/auth"
                       },
                       "authorization_response_iss_parameter_supported": true
                     }

@@ -95,14 +95,14 @@ services:
     command:
       - start-dev
       - --import-realm
-      - --http-port=9090
+      - --http-port=8091
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     profiles: [ 'app' ]
     network_mode: host
     #    ports:
-    #      - "9090:9090"
+    #      - "8091:8091"
     volumes:
       - ./keycloak/realms:/opt/keycloak/data/import
 
