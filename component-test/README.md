@@ -14,7 +14,7 @@ improve the project build time while skipping the tests(`gradle -X test`).
 - **Java 21+**
 - **Gradle**
 - **Spring Boot test**
-- **Cucumber JVM**
+- **Cucumber**
 - **JUnit 5**
 - **AssertJ**
 - **Awaitality**
