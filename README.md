@@ -21,6 +21,7 @@ Implemented:
 - [x] @Timed Micrometer
 - [x] improve GitHub CI. Parallelize test executions, cache build and so on
 - [x] Spring Security(JWT, ~~Basic~~)
+- [x] Custom method arguments resolver(see com.github.jenkaby.config.security.support.LoggedUserResolver)
 
   In progress
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
