@@ -3,6 +3,7 @@ package com.github.jenkaby.config.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +53,8 @@ public class SecurityConfig {
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
+//                the UserDetailsService bean is injected automatically
+//                .userDetailsService(userDetailsService())
                 .build();
     }
 
@@ -59,8 +62,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    Converter<Jwt, AbstractAuthenticationToken> authenticationConverter,
-                                                   JwtDecoder jwtDecoderOriginal
+                                                   @Qualifier("customDecoderOriginal") JwtDecoder jwtDecoderOriginal
     ) throws Exception {
+        log.info("JWT Decoder in SecurityConfig: {}", jwtDecoderOriginal.getClass().getName());
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
@@ -90,7 +94,15 @@ public class SecurityConfig {
                 .password("{noop}password")
                 .roles("developer")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+
+        return new InMemoryUserDetailsManager(user) {
+
+            @Override
+            public UserDetails loadUserByUsername(String username) {
+                log.info("Loading user by username: {}", username);
+                return super.loadUserByUsername(username);
+            }
+        };
     }
 
 
@@ -113,6 +125,12 @@ public class SecurityConfig {
                     .map(roleName -> "ROLE_" + roleName)
                     .collect(Collectors.toCollection(ArrayList::new));
 
+            List<String> roles = Optional.ofNullable((List<String>) claims.get("roles")).orElse(List.of())
+                    .stream()
+                    .map(roleName -> "ROLE_" + roleName)
+                    .collect(Collectors.toCollection(ArrayList::new));
+            authorities.addAll(roles);
+
             List<String> scopes = Arrays.stream(((String) claims.getOrDefault("scope", "")).split(" "))
                     .map(scope -> "SCOPE_" + scope)
                     .toList();
@@ -126,19 +144,27 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Qualifier("customDecoderOriginal")
     public JwtDecoder jwtDecoder(@Autowired RestTemplate restTemplate,
-                                 @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issueUri,
-                                 @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkSetUri
+                                 @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri:dummy}") String issueUri,
+                                 @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri:dummy}") String jwkSetUri
     ) {
-        System.out.println("++++++++++++++++++++ ");
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
-                .withIssuerLocation(issueUri)
-//                .withJwkSetUri(jwkSetUri)
+//                .withIssuerLocation(issueUri)
+                .withJwkSetUri(jwkSetUri)
+//                .jwsAlgorithm(SignatureAlgorithm.RS256)
                 .restOperations(restTemplate)
+//                .jwsAlgorithms(signatureAlgorithms -> )
                 .build();
+//        JwtDecoderProviderConfigurationUtils::getJWSAlgorithms
+
         OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefaultWithIssuer(issueUri);
         jwtDecoder.setJwtValidator(jwtValidator);
-        return jwtDecoder;
+
+        return (token) -> {
+            log.info("Token to decode: {}", token);
+            return jwtDecoder.decode(token);
+        };
     }
 
     public interface AuthoritiesConverter extends Converter<Map<String, Object>, Collection<GrantedAuthority>> {

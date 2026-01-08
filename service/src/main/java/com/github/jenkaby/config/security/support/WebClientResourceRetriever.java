@@ -8,6 +8,10 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * This class is a custom implementation of the ResourceRetriever interface
+ * that uses Spring's <bold>RestTemplate to fetch resources</bold> from a given URL.
+ */
 public class WebClientResourceRetriever implements ResourceRetriever {
 
     private final RestTemplate webClient;

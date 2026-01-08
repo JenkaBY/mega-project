@@ -12,7 +12,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Slf4j
@@ -37,7 +36,7 @@ public class LoggedUserResolver implements HandlerMethodArgumentResolver {
                 .map(p -> (Jwt) p)
                 .map(jwt -> LoggedUserInfo.builder()
                         .issuer(jwt.getIssuer())
-                        .id(UUID.fromString(jwt.getClaimAsString("sub")))
+                        .id(jwt.getClaimAsString("sub"))
                         .email(jwt.getClaimAsString("email"))
                         .name(jwt.getClaimAsString("name"))
                         .userName(jwt.getClaimAsString("preferred_username"))
