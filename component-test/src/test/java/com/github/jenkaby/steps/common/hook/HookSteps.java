@@ -52,7 +52,7 @@ public class HookSteps {
     }
 
     @After
-    public void clearScenarioRecourses() {
+    public void clearScenarioResources() {
         log.info("Clearing scenario resources...");
         store.clear();
         scenarioContext.clearHeaders();

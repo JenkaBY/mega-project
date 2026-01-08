@@ -2,7 +2,7 @@ Feature: Describe endpoints related to Secured resources controller
 
   Background:
     Given application is started
-    And the 'testuser-bearer' is authenticated
+    And the user is authenticated with bearer token 'valid-jwt-token'
 
   Scenario: Verify the secured resources endpoints are secured
     When a GET request has been made to '/api/v1/secured-resources' endpoint
@@ -34,6 +34,6 @@ Feature: Describe endpoints related to Secured resources controller
 #    Clear Bearer token
     Given there's no authenticated user
 #   Set Basic token
-    And the 'testuser-basic' is authenticated
+    And the user is authenticated with basic username 'testuser-basic'
     When a GET request has been made to '/api/v1/secured-resources/basic/has-roles/developer' endpoint
     Then the response status is 200

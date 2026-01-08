@@ -1,9 +1,12 @@
 package com.github.jenkaby.context;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jenkaby.config.WebConfig;
 import io.cucumber.spring.ScenarioScope;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -21,22 +24,29 @@ import java.util.Map;
 @Component
 public class ScenarioContext {
 
+    private final ObjectMapper mapper = WebConfig.DEFAULT_OBJECT_MAPPER;
+    private TransactionStatus transactionStatus;
     private final Map<String, List<String>> requestHeaders = new HashMap<>();
     private ResponseEntity<String> response;
-    private TransactionStatus transactionStatus;
     private Object requestBody;
 
-    @SuppressWarnings("unchecked")
+    @SneakyThrows
     public <T> T getResponseBody(Class<T> clazz) {
-        return (T) response.getBody();
+        return mapper.readValue(response.getBody(), clazz);
     }
 
     public String getStringResponseBody() {
-        return this.getResponseBody(String.class);
+        return response.getBody();
     }
 
     public void addHeader(String headerKey, String headerValue) {
         List<String> values = this.requestHeaders.getOrDefault(headerKey, new ArrayList<>());
+        values.add(headerValue);
+        this.requestHeaders.put(headerKey, values);
+    }
+
+    public void replaceHeader(String headerKey, String headerValue) {
+        List<String> values = new ArrayList<>();
         values.add(headerValue);
         this.requestHeaders.put(headerKey, values);
     }

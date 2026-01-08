@@ -5,6 +5,13 @@ spring:
       auto-offset-reset: earliest
     properties:
       schema.registry.url: mock://mega-app-scope
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://fake:8099/realms/local
+          #          this property is optional, spring will not auto-discover issuer during start up
+          jwk-set-uri: http://fake:8099/realms/local/protocol/openid-connect/certs
   test:
     kafka:
       consumer:

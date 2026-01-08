@@ -18,16 +18,18 @@ public class ApplicationSteps {
 
     @Given("application is started")
     public void applicationIsStarted() {
-//        do nothing
+        //        do nothing
+        log.info("Application is started step");
     }
 
     @SneakyThrows
     @Then("the {string} bean of the {string} class in the application context is {proxyType} proxy type")
     public void theBeanInTheApplicationContextIsProxyTypeProxyType(String beanName, String fullClass, ProxyType expected) {
         Class<?> classToCast = Class.forName(fullClass);
+
         var actual = applicationContext.getBean(beanName, classToCast);
         log.info("A current class of the {} bean is {}", beanName, actual.getClass());
-        assertThat(ProxyType.fromClass(actual.getClass())).isEqualTo(expected);
 
+        assertThat(ProxyType.fromClass(actual.getClass())).isEqualTo(expected);
     }
 }

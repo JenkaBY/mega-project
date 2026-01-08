@@ -1,56 +1,79 @@
 package com.github.jenkaby.config.security;
 
-import dasniko.testcontainers.keycloak.KeycloakContainer;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.KeycloakBuilder;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
+
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
-@RequiredArgsConstructor
 @Configuration
 public class TestSecurityConfig {
 
-    @Value("${keycloak.auth-server-url}")
-    private final String keycloakUrl;
-
-    @Value("${keycloak.realm}")
-    private final String realm;
-
-    @Value("${keycloak.resource}")
-    private final String clientId;
-
-    @Value("${keycloak.credentials.secret}")
-    private final String clientSecret;
-
-
     @Bean
-    public KeycloakContainer keyCloakContainer(DynamicPropertyRegistry registry) {
-        KeycloakContainer keycloakContainer = new KeycloakContainer("quay.io/keycloak/keycloak:26.3")
-                .withRealmImportFile("/keycloak/realms/local-test-realm.json");
-        keycloakContainer.start();
-
-        registry.add("spring.security.oauth2.resourceserver.jwt.issuer-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/" + realm);
-//        registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> keycloakContainer.getAuthServerUrl() + "/realms/" + realm + "/.well-known/openid-configuration");
-        registry.add("keycloak.auth-server-url", () -> keycloakContainer.getAuthServerUrl());
-
-        log.info("Keycloak HOST: {}", keycloakContainer.getHost());
-        log.info("keyCloakContainer.getAuthServerUrl() : {}", keycloakContainer.getAuthServerUrl());
-        log.info("keyCloakContainer.getPort() : {}", keycloakContainer.getFirstMappedPort());
-        return keycloakContainer;
+    @Primary
+    public JwtDecoder testJwtDecoder() {
+        log.info("Initializing TestJwtDecoder for component tests");
+        return new TestJwtDecoder();
     }
 
-    @Bean
-    public KeycloakBuilder keycloakClientBuilder(KeycloakContainer keyCloakContainer) {
-        return KeycloakBuilder.builder()
-                .serverUrl(keyCloakContainer.getAuthServerUrl())
-                .realm(realm)
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .grantType(OAuth2Constants.PASSWORD);
+    @Slf4j
+    private static class TestJwtDecoder implements JwtDecoder {
+
+        private static final String VALID_JWT_TOKEN = "valid-jwt-token";
+        private static final String INVALID_JWT_TOKEN = "invalid-jwt-token";
+
+        @Override
+        public Jwt decode(String token) throws JwtException {
+
+            log.info("Decoding JWT token: {}", token);
+            if (VALID_JWT_TOKEN.equals(token)) {
+                log.info("Valid JWT token accepted: {}", token);
+                return createMockJwt(token);
+            }
+            log.warn("Unknown JWT token: {}", token);
+            throw new JwtException("Invalid JWT token");
+        }
+
+        private Jwt createMockJwt(String token) {
+            Map<String, Object> headers = new HashMap<>();
+            headers.put("alg", "none");
+            headers.put("typ", "JWT");
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("sub", "test-user");
+            claims.put("iss", "http://localhost:8080/auth/realms/test");
+            claims.put("aud", List.of("component-mega-app"));
+            claims.put("exp", Instant.now().plusSeconds(3600).getEpochSecond());
+            claims.put("iat", Instant.now().getEpochSecond());
+            claims.put("jti", "test-jwt-id");
+            claims.put("scope", "read write");
+            claims.put("preferred_username", "testuser");
+            claims.put("email", "testuser@example.com");
+            claims.put("name", "test user");
+            claims.put("roles", List.of("USER", "ADMIN", "developer"));
+            claims.put("upn", "authenticated@domain.com");
+            claims.put("tid", "00000000-0000-0000-0000-000000000001");
+            claims.put("oid", "00000000-0000-0000-0000-000000000002");
+            claims.put("deviceid", "00000000-0000-0000-0000-000000000003");
+
+            Instant issuedAt = Instant.now();
+            Instant expiresAt = issuedAt.plusSeconds(3600);
+
+            return new Jwt(
+                    token,
+                    issuedAt,
+                    expiresAt,
+                    headers,
+                    claims
+            );
+        }
     }
 }

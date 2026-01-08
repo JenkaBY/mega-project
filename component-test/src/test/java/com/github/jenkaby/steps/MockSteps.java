@@ -27,12 +27,14 @@ public class MockSteps {
     }
 
     @Then("verify TransactionJsonListenerService was invoked {int} time(s)")
+    @SuppressWarnings("unchecked")
     public void verifyTransactionLogServiceWasInvokedNTimes(int times) {
         verify(transactionJsonListenerService, times(times))
                 .process(anyMap(), any(TransactionEvent.class), anyString(), any(ConsumerRecord.class));
     }
 
     @Then("verify no interaction with TransactionJsonListenerService happened during {int} seconds")
+    @SuppressWarnings("unchecked")
     public void verifyNoInteractionTransactionLogService(int seconds) {
         var duration = Duration.of(seconds, ChronoUnit.SECONDS);
         int pollInterval = 100;
