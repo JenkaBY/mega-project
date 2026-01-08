@@ -8,11 +8,11 @@ confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.20.1'
 dependencyCheckVersion = '11.1.1'
-# TODO upgrade version when app is migrated to SB3.4
+# TODO upgrade version when app is migrated to SB3.4+
 # see the compatibility matrix
 springdocOpenApiStarterWebUiVersion = '2.6.0'
-keycloakAdminClientVersion = '26.0.6'
-keycloakTestcontainerVersion = '3.8.0'
+# TODO remove when migrating to springdoc 2.7+
+swaggerAnnotationsVersion = '2.2.41'
 wiremockSpringIntegrationVersion = '3.10.6'
 
 [libraries]
@@ -28,8 +28,6 @@ spring-tx = { module = 'org.springframework:spring-tx' }
 sb-starter-auth2-resource-server = { module = 'org.springframework.boot:spring-boot-starter-oauth2-resource-server' }
 # security testing
 spring-security-oauth2-jose = { module = 'org.springframework.security:spring-security-oauth2-jose' }
-# it comes as transient dependency from testcontainers-keycloak
-keycloak-admin-client = { module = 'org.keycloak:keycloak-admin-client', version.ref = 'keycloakAdminClientVersion' }
 
 micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
@@ -40,7 +38,7 @@ mapstruct-processor = { module = 'org.mapstruct:mapstruct-processor', version.re
 hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
 jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
 springdoc-starter-webmvc-ui = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'springdocOpenApiStarterWebUiVersion' }
-
+swagger-annotations = { module = 'io.swagger.core.v3:swagger-annotations', version.ref = 'swaggerAnnotationsVersion' }
 # kafka
 spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
 kafka-schema-registry = { module = "io.confluent:kafka-schema-registry-client", version.ref = 'confluentKafkaVersion' }
@@ -62,7 +60,8 @@ spring-security-test = { module = 'org.springframework.security:spring-security-
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 test-container-kafka = { module = 'org.testcontainers:kafka' }
-test-container-keycloak = { module = 'com.github.dasniko:testcontainers-keycloak', version.ref = 'keycloakTestcontainerVersion' }
+# component tests fail without this dependency due to some classpath issue
+apache-commons-codec = { module = 'commons-codec:commons-codec' }
 
 cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
 # for junit 5
@@ -88,6 +87,7 @@ spring-web-application = [
     'sb-starter-actuator',
     'sb-starter-logging',
     'springdoc-starter-webmvc-ui',
+    'swagger-annotations',
     'liquibase',
     'mapstruct'
 ]
@@ -116,9 +116,9 @@ spring-test = [
     'test-container-junit',
     'test-container-postgres',
     'test-container-kafka',
-    'test-container-keycloak',
     'spring-security-test',
     'sb-wiremock',
+    'apache-commons-codec'
 ]
 
 cucumber-test = [
