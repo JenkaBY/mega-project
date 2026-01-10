@@ -28,7 +28,7 @@ improve the project build time while skipping the tests(`gradle -X test`).
 env APP_TEST_LATENCY_VALIDATION_THRESHOLD=5 ./gradlew :clean :component-test:test
 ``` 
 
-or run from IntelliJIdea:
+or run from IntelliJ IDEA:
 
 ```shell
 cd .. && env APP_TEST_LATENCY_VALIDATION_THRESHOLD=5 ./gradlew :clean :component-test:test

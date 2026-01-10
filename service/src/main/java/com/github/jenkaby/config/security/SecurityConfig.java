@@ -3,8 +3,10 @@ package com.github.jenkaby.config.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -29,10 +31,15 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatchers;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -60,12 +67,20 @@ public class SecurityConfig {
 
     @Order(2)
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+    public SecurityFilterChain bearer(HttpSecurity http,
                                                    Converter<Jwt, AbstractAuthenticationToken> authenticationConverter,
-                                                   @Qualifier("customDecoderOriginal") JwtDecoder jwtDecoderOriginal
+                                      JwtDecoder jwtDecoder
     ) throws Exception {
-        log.info("JWT Decoder in SecurityConfig: {}", jwtDecoderOriginal.getClass().getName());
         return http
+                .securityMatcher(
+                        new OrRequestMatcher(
+                                PathRequest.toStaticResources().atCommonLocations(),
+                                new AndRequestMatcher(
+                                        antMatcher("/api/v1/secured-resources/**"),
+                                        RequestMatchers.not(antMatcher("/api/v1/secured-resources/basic/**"))
+                                )
+                        )
+                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/favicon.ico").permitAll();
@@ -77,7 +92,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer.jwt(jwtConfigurer ->
                             jwtConfigurer
-                                    .decoder(jwtDecoderOriginal)
+                                    .decoder(jwtDecoder)
                                     .jwtAuthenticationConverter(authenticationConverter)
                     );
                 })
@@ -95,14 +110,7 @@ public class SecurityConfig {
                 .roles("developer")
                 .build();
 
-        return new InMemoryUserDetailsManager(user) {
-
-            @Override
-            public UserDetails loadUserByUsername(String username) {
-                log.info("Loading user by username: {}", username);
-                return super.loadUserByUsername(username);
-            }
-        };
+        return new InMemoryUserDetailsManager(user);
     }
 
 
@@ -115,6 +123,7 @@ public class SecurityConfig {
     }
 
     @Bean
+    @SuppressWarnings("unchecked")
     AuthoritiesConverter realmRolesAuthoritiesConverter() {
         return claims -> {
             log.info("CLAIMS {}", claims);
@@ -143,30 +152,27 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
-    @Qualifier("customDecoderOriginal")
-    public JwtDecoder jwtDecoder(@Autowired RestTemplate restTemplate,
-                                 @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri:dummy}") String issueUri,
-                                 @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri:dummy}") String jwkSetUri
-    ) {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
-//                .withIssuerLocation(issueUri)
-                .withJwkSetUri(jwkSetUri)
-//                .jwsAlgorithm(SignatureAlgorithm.RS256)
-                .restOperations(restTemplate)
-//                .jwsAlgorithms(signatureAlgorithms -> )
-                .build();
-//        JwtDecoderProviderConfigurationUtils::getJWSAlgorithms
-
-        OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefaultWithIssuer(issueUri);
-        jwtDecoder.setJwtValidator(jwtValidator);
-
-        return (token) -> {
-            log.info("Token to decode: {}", token);
-            return jwtDecoder.decode(token);
-        };
+    public interface AuthoritiesConverter extends Converter<Map<String, Object>, Collection<GrantedAuthority>> {
     }
 
-    public interface AuthoritiesConverter extends Converter<Map<String, Object>, Collection<GrantedAuthority>> {
+    @Configuration(proxyBeanMethods = false)
+    @AutoConfigureBefore(OAuth2ResourceServerAutoConfiguration.class)
+    public static class StartupBefore {
+
+        @Bean
+        public JwtDecoder jwtDecoder(@Autowired RestTemplate restTemplate,
+                                     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}") String issueUri,
+                                     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}") String jwkSetUri
+        ) {
+            NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder
+                    .withJwkSetUri(jwkSetUri)
+                    .restOperations(restTemplate)
+                    .build();
+
+            OAuth2TokenValidator<Jwt> jwtValidator = JwtValidators.createDefaultWithIssuer(issueUri);
+            jwtDecoder.setJwtValidator(jwtValidator);
+
+            return jwtDecoder;
+        }
     }
 }

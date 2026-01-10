@@ -10,14 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.wiremock.spring.EnableWireMock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Disabled("It fails. The Keycloak must be mocked")
-@EnableWireMock
+//@EnableWireMock
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class TestControllerSpringBootTest extends AbstractReusableDbTest {
 
@@ -59,18 +58,6 @@ class TestControllerSpringBootTest extends AbstractReusableDbTest {
 
     //    @TestConfiguration
     static class TestSecurityConfig {
-
-//        @Bean
-//        @Primary
-//        public JwtDecoder jwtDecoder() {
-//            System.out.println("!!!!!!!!!!!!!!!!!!!! ");
-//            // return a fake JwtDecoder that always validates your test tokens
-//            return token -> Jwt.withTokenValue(token)
-//                    .claim("sub", "testuser-bearer")
-//                    .claim("realm_access", Map.of("roles", List.of("developer")))
-//                    .build();
-//        }
-
 
     }
 
