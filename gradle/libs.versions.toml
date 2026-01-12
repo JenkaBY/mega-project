@@ -1,6 +1,6 @@
 [versions]
-springVersion = '3.3.4'
-springDepManagementVersion = '1.1.6'
+springVersion = '3.4.13'
+springDepManagementVersion = '1.1.7'
 mapStructVersion = '1.6.2'
 hypersistanceUtilsHibernateVersion = '3.8.3'
 apacheAvroVersion = '1.11.3'
@@ -8,9 +8,15 @@ confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.20.1'
 dependencyCheckVersion = '11.1.1'
-# TODO upgrade version when app is migrated to SB3.4
+# TODO upgrade version when app is migrated to SB3.4+
 # see the compatibility matrix
-springdocOpenApiStarterWebUiVersion = '2.6.0'
+springdocOpenApiStarterWebUiVersion = '2.7.0'
+# TODO remove when migrating to springdoc 2.7+
+swaggerAnnotationsVersion = '2.2.41'
+wiremockSpringIntegrationVersion = '3.9.0'
+# Spring boot dep manegment override version is 5.3.1 which is incompotible with
+# TODO delete this override when migrating to SB 3.4+
+httpclient5Version = '5.4.3'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -21,6 +27,11 @@ sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-lo
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
 spring-tx = { module = 'org.springframework:spring-tx' }
 
+# security
+sb-starter-auth2-resource-server = { module = 'org.springframework.boot:spring-boot-starter-oauth2-resource-server' }
+# security testing
+spring-security-oauth2-jose = { module = 'org.springframework.security:spring-security-oauth2-jose' }
+
 micrometer-prometheus = { module = 'io.micrometer:micrometer-registry-prometheus' }
 lombok = { module = 'org.projectlombok:lombok' }
 liquibase = { module = 'org.liquibase:liquibase-core' }
@@ -30,7 +41,7 @@ mapstruct-processor = { module = 'org.mapstruct:mapstruct-processor', version.re
 hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
 jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
 springdoc-starter-webmvc-ui = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'springdocOpenApiStarterWebUiVersion' }
-
+swagger-annotations = { module = 'io.swagger.core.v3:swagger-annotations', version.ref = 'swaggerAnnotationsVersion' }
 # kafka
 spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
 kafka-schema-registry = { module = "io.confluent:kafka-schema-registry-client", version.ref = 'confluentKafkaVersion' }
@@ -47,10 +58,13 @@ sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test'
 sb-testcontainers = { module = 'org.springframework.boot:spring-boot-testcontainers' }
 assertj-core = { module = 'org.assertj:assertj-core' }
 awaitility = { module = 'org.awaitility:awaitility' }
+spring-security-test = { module = 'org.springframework.security:spring-security-test' }
 
 test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:postgresql' }
 test-container-kafka = { module = 'org.testcontainers:kafka' }
+# component tests fail without this dependency due to some classpath issue
+apache-commons-codec = { module = 'commons-codec:commons-codec' }
 
 cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
 # for junit 5
@@ -60,6 +74,8 @@ cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucum
 junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
+sb-wiremock = { module = 'org.wiremock.integrations:wiremock-spring-boot', version.ref = 'wiremockSpringIntegrationVersion' }
+http-components-client5 = { module = 'org.apache.httpcomponents.client5:httpclient5', version.ref = 'httpclient5Version' }
 
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
@@ -75,8 +91,12 @@ spring-web-application = [
     'sb-starter-actuator',
     'sb-starter-logging',
     'springdoc-starter-webmvc-ui',
+    'swagger-annotations',
     'liquibase',
     'mapstruct'
+]
+spring-security = [
+    'sb-starter-auth2-resource-server',
 ]
 spring-observability = [
     'micrometer-prometheus',
@@ -100,6 +120,10 @@ spring-test = [
     'test-container-junit',
     'test-container-postgres',
     'test-container-kafka',
+    'spring-security-test',
+    'sb-wiremock',
+    #    'http-components-client5',
+    'apache-commons-codec'
 ]
 
 cucumber-test = [

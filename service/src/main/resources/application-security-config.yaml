@@ -1,0 +1,8 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8091/realms/local
+          #          this property is optional, spring will not auto-discover issuer during start up
+          jwk-set-uri: http://localhost:8091/realms/local/protocol/openid-connect/certs

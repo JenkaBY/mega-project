@@ -47,7 +47,9 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
   config:
-    import: "classpath:application-management-config.yaml"
+    import:
+      - "classpath:application-management-config.yaml"
+      - "classpath:application-security-config.yaml"
 logging:
   include-application-name: false
   level:
@@ -72,3 +74,6 @@ app:
         name: notification.fct.message.v0
         dlt: ${app.kafka.topics.message.name}.dlt
         partition: 2
+  debug:
+    rest-template:
+      all-requests: false

@@ -52,7 +52,7 @@ public class WebRequestSteps {
                                                   String endpoint,
                                                   @Nullable @Transpose DataTable queryParams) {
 
-        var request = new HttpEntity<>(scenarioContext.getRequestBody());
+        var request = new HttpEntity<>(scenarioContext.getRequestBody(), scenarioContext.getRequestHeaders());
         var uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + endpoint);
         Optional.ofNullable(queryParams)
                 .map(DataTable::asMap)
@@ -62,7 +62,7 @@ public class WebRequestSteps {
         var response = IntStream.range(0, times).mapToObj(i -> restClient.exchange(uri, method, request, String.class))
                 .peek(resp -> log.info("Response : {}", resp))
                 .toList().getLast();
-        log.info("Last Response : {}", response);
+        log.debug("Last Response : {}", response);
         scenarioContext.setResponse(response);
     }
 

@@ -2,6 +2,7 @@ package com.github.jenkaby.transformer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.jenkaby.model.AuthTokenType;
 import com.github.jenkaby.service.support.ProxyType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
 import io.cucumber.java.DefaultDataTableEntryTransformer;
@@ -35,6 +36,11 @@ public class ParameterTypes {
     @ParameterType("JDK_DYNAMIC|CGLIB|NONE")
     public ProxyType proxyType(String type) {
         return ProxyType.valueOf(type);
+    }
+
+    @ParameterType("bearer|basic")
+    public AuthTokenType tokenType(String type) {
+        return AuthTokenType.of(type);
     }
 
     @SneakyThrows

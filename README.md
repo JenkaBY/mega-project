@@ -1,90 +1,65 @@
-Implemented:
-- [x] gradle multi projects
-- [x] gradle version catalog
-- [x] postgres testcontainers
-- [x] slice tests (JPA, WebMvc)
-- [x] component tests via Cucumber
-- [x] github CI
-- [x] kafka: Kafka consumer
-- [x] kafka: string SerDe
-- [x] kafka: JSON SerDe
-- [x] kafka: Avro schemas
-- [x] kafka: schema registry
-- [x] kafka: avro SerDe
-- [x] graceful shutdown. [Note](#gracefully-shutdown)
-- [x] kafka: skip retrying message consuming for specific exception
-- [x] kafka: filter kafka message by field or header value
-- [x] Add profile to docker-compose file to easily start only minimal number of services. [Note](#start-infrastructure)
-- [x] AOP (around method execution and @annotation)
-- [x] Bean Post Processor(BPP)(CGLib proxy type)
-- [x] Bean Post Processor(BPP)(JDK Dynamic proxy type)
-- [x] @Timed Micrometer
-- [x] improve GitHub CI. Parallelize test executions, cache build and so on
+# Project Mega-App
 
-In progress
-- [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
+There are several services and sub-folders in this project:
 
+- service: [main app](/service/README.md) leverage Spring Boot application
+- load-test: project for generating load tests via Gatling framework to be able to observe metrics on the Grafana
+  dashboard
+- component-test: implemented via Cucumber framework to test components integration
+- docker: contains [docker-compose file](/docker/docker-compose.yaml) with obligatory and complimentary services for
+  local development and testing
+- Gradle: wrapper files and [version catalog](/gradle/libs.versions.toml) for dependencies management
 
-TODO:
-- [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
-- [ ] use the best-practise for topic name convention [dev.io](https://dev.to/devshawn/apache-kafka-topic-naming-conventions-3do6)
-- [ ] kafka ssl via SslBundles
-- [ ] spring web via https with self-signed certificate
-- [ ] QueryDSL or jooq
-- [ ] retryable schema registry (it should be on the main source
-  soon https://github.com/confluentinc/schema-registry/pull/3424)
-- [ ] Spring Security(JWT, Basic)
-- [ ] Improve README.md files
-
-### Notes:
- The docker compose file contains several services that use host network 
- ```
-  service:
-    promehteus: 
-      network_mode: host
- ```
-It was done because of the issues with docker running in WSL and running the 'mega-app' service on windows host.
-It was the easiest way to forward ports and to connect the running services with Prometheus.
-Ideally the prometheus container should be able to establish connection to the running services via {{ docker.for.win.host.internal }}  or {{ host.docker.internal:host-gateway }}
-.See the [How to connect to the Docker host from inside a Docker container?](https://medium.com/@TimvanBaarsen/how-to-connect-to-the-docker-host-from-inside-a-docker-container-112b4c71bc66)
-Additionally, it's needed to prometheus config to be reconfigured according to docker network configuration(use service name) for grafana, prom/alertmanager and prometheus itself.
 
 ### Start infrastructure
 
-Start infrastructure(db, kafka's services):
+Start obligatory infrastructure(db, Kafka's services):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' --profile 'observability' up -d
 ```
 
-To stop infrastructure(db, kafka's services):
+To stop infrastructure(db, Kafka's services):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'kafka-admin' --profile 'app' stop
 ```
 
-To start observability infrastructure(prometheus, grafana, prometheus-alert and so):
+To start observability infrastructure(Prometheus, Grafana, prometheus-alert and so):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'observability' up -d
 ```
 
-To stop ALL infrastructure(prometheus, grafana, prometheus-alert and so):
+To stop ALL infrastructure(Prometheus, Grafana, prometheus-alert and so):
 
 ```shell
 docker compose --file ./docker/docker-compose.yaml --profile 'observability' --profile 'kafka-admin' --profile 'app' stop
 ```
 
-### Gracefully shutdown
-To gracefully shutdown application, send POST localhost:8080/actuator/shutdown
+##### Notes:
 
-```shell
-curl -X POST http://localhost:8080/actuator/shutdown -H "Content-Type: application/json"
-```
+The docker compose file contains several services that use host network
+
+ ```
+service:
+    promehteus: 
+      network_mode: host
+ ```
+
+It was done because of the issues with docker running in WSL and running the 'mega-app' service on Windows host.
+It was the easiest way to forward ports and to connect the running services with Prometheus.
+Ideally the Prometheus container should be able to establish connection to the running services via {{
+docker.for.win.host.internal }} or {{ host.docker.internal:host-gateway }}
+.See
+the [How to connect to the Docker host from inside a Docker container?](https://medium.com/@TimvanBaarsen/how-to-connect-to-the-docker-host-from-inside-a-docker-container-112b4c71bc66)
+Additionally, it's needed to Prometheus config to be reconfigured according to docker network configuration(use service
+name) for Grafana, prom/alertmanager and Prometheus itself.
+
 
 ### Performance test (Load test)
 
-To run gatling test see the file [README.md](./load-test/README.md)
+To run Gatling test see the file [README.md](./load-test/README.md)
 
 ### Component test (Load test)
 

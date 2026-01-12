@@ -1,0 +1,44 @@
+{
+  "realm": "local",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "mega-app-client-id",
+      "name": "MegaAppClientName",
+      "secret": "spring-boot-secret",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true
+    }
+  ],
+  "users": [
+    {
+      "username": "testuser",
+      "email": "test.user@megaapp.com",
+      "firstName": "MegaApp",
+      "lastName": "User",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "offline_access",
+        "developer"
+      ]
+    }
+  ]
+}
