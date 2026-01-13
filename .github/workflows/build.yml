@@ -28,6 +28,7 @@ jobs:
         with:
           java-version: 21
           distribution: 'corretto'
+          cache: 'gradle'
       - name: Print gradlew version
         run: ./gradlew -v
       - name: Setup Gradle
