@@ -50,10 +50,11 @@ jobs:
           - test-type: unit
             task: ':service:test'
             report-path: 'service/build/reports/tests/test/'
+            latency-threshold: 'does-not-apply'
           - test-type: component
             task: ':component-test:test'
             report-path: 'component-test/build/reports/tests/test/'
-            env-vars: 'APP_TEST_LATENCY_VALIDATION_THRESHOLD=15ms'
+            latency-threshold: '15ms'
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
@@ -70,7 +71,7 @@ jobs:
       - name: Run ${{ matrix.test-type }} tests
         run: ./gradlew ${{ matrix.task }} $GRADLE_ARGS
         env:
-          ${{ matrix.env-vars }}
+          APP_TEST_LATENCY_VALIDATION_THRESHOLD: ${{ matrix.latency-threshold }}
       - name: Upload ${{ matrix.test-type }} test report
         if: always()
         uses: actions/upload-artifact@v6
