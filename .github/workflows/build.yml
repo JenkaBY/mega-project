@@ -38,10 +38,22 @@ jobs:
         uses: gradle/actions/dependency-submission@v5
       - name: Build only service with Gradle. Skip tests
         run: ./gradlew clean :service:build -x :test -x :service:test -x :service:bootJar -x :component-test:build -x :component-test:test $GRADLE_ARGS
-  unit-tests:
-    name: "Gradle unit tests"
-    needs: [ "build" ]
+  test:
+    name: "Tests: ${{ matrix.test-type }}"
+    needs: [ build ]
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-type: [ unit, component ]
+        include:
+          - test-type: unit
+            task: ':service:test'
+            report-path: 'service/build/reports/tests/test/'
+          - test-type: component
+            task: ':component-test:test'
+            report-path: 'component-test/build/reports/tests/test/'
+            env-vars: 'APP_TEST_LATENCY_VALIDATION_THRESHOLD=15ms'
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
@@ -50,45 +62,18 @@ jobs:
         with:
           java-version: 21
           distribution: 'corretto'
-      - name: Print gradlew version
-        run: ./gradlew -v
+          cache: 'gradle'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
         with:
-          cache-read-only: false
-      - name: Unit Tests with Gradle
-        run: ./gradlew :service:test $GRADLE_ARGS
-      - name: Upload Component Test Report
-        if: always() # Ensure the reports are uploaded even if the tests fail
-        uses: actions/upload-artifact@v6
-        with:
-          name: unit-test-report
-          path: service/build/reports/tests/test/
-  component-tests:
-    name: "Gradle component tests"
-    needs: [ "build" ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v6
-      - name: Setup Java 21
-        uses: actions/setup-java@v5
-        with:
-          java-version: 21
-          distribution: 'corretto'
-      - name: Print gradlew version
-        run: ./gradlew -v
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-        with:
-          cache-read-only: false
-      - name: Component Tests with Gradle
-        run: ./gradlew  :component-test:test $GRADLE_ARGS
+          cache-read-only: true
+      - name: Run ${{ matrix.test-type }} tests
+        run: ./gradlew ${{ matrix.task }} $GRADLE_ARGS
         env:
-          APP_TEST_LATENCY_VALIDATION_THRESHOLD: 15ms
-      - name: Upload Component Test Report
-        if: always() # Ensure the reports are uploaded even if the tests fail
+          ${{ matrix.env-vars }}
+      - name: Upload ${{ matrix.test-type }} test report
+        if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: component-test-report
-          path: component-test/build/reports/tests/test/
+          name: ${{ matrix.test-type }}-test-report
+          path: ${{ matrix.report-path }}
