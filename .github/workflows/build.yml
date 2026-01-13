@@ -28,16 +28,14 @@ jobs:
         with:
           java-version: 21
           distribution: 'corretto'
-      #          Caching is enabled by default when using 'setup-gradle'
-      #          cache: 'gradle'
       - name: Print gradlew version
         run: ./gradlew -v
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      #      check dependency
+        with:
+          cache-read-only: false
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
-      #       Build and skip tests
       - name: Build only service with Gradle. Skip tests
         run: ./gradlew clean :service:build -x :test -x :service:test -x :service:bootJar -x :component-test:build -x :component-test:test $GRADLE_ARGS
   unit-tests:
@@ -52,13 +50,12 @@ jobs:
         with:
           java-version: 21
           distribution: 'corretto'
-      #          Caching is enabled by default when using 'setup-gradle'
-      #          cache: 'gradle'
       - name: Print gradlew version
         run: ./gradlew -v
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      #      Running Unit tests
+        with:
+          cache-read-only: false
       - name: Unit Tests with Gradle
         run: ./gradlew :service:test $GRADLE_ARGS
       - name: Upload Component Test Report
@@ -79,13 +76,12 @@ jobs:
         with:
           java-version: 21
           distribution: 'corretto'
-      #          Caching is enabled by default when using 'setup-gradle'
-      #          cache: 'gradle'
       - name: Print gradlew version
         run: ./gradlew -v
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      #      Running Component tests
+        with:
+          cache-read-only: false
       - name: Component Tests with Gradle
         run: ./gradlew  :component-test:test $GRADLE_ARGS
         env:
