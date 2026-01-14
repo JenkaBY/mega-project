@@ -19,6 +19,16 @@ allprojects {
     }
 }
 
+subprojects {
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed", "standardOut", "standardError"
+        }
+    }
+}
+
 // disable all compilation tasks because the root project should not contain any source files
 [compileJava, compileTestJava, build, jar].each {
     it -> it.enabled = false

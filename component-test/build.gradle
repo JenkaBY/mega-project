@@ -37,10 +37,10 @@ dependencies {
     testRuntimeOnly libs.junit.platform.launcher
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-    systemProperty("cucumber.junit-platform.naming-strategy", "long")
-    testLogging {
-        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
-    }
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//    systemProperty("cucumber.junit-platform.naming-strategy", "long")
+//    testLogging {
+//        events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+//    }
+//}
