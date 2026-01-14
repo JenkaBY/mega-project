@@ -1,9 +1,9 @@
-In progress
-
+In progress:
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
+- [ ] play with the openrewrite library
+
 
 TODO:
-
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
 - [ ] use the best-practise for topic name
   convention [dev.io](https://dev.to/devshawn/apache-kafka-topic-naming-conventions-3do6)
@@ -19,12 +19,11 @@ TODO:
     - [ ] Grafana as logs collector
     - [ ] Grafana as traces collector
 - [ ] move testcontainers to separate spring profile
-- [ ] use embedded external dependencies with a embedded spring profile for local development and tests
+- [ ] use embedded external dependencies with an embedded spring profile for local development and tests
 - [ ] use spun up services for faster local testing
 - [ ] investigate and apply `@TestBean`
 
 Implemented:
-
 - gradle
     - [x] multi projects structure
     - [x] version catalog

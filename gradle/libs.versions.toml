@@ -14,9 +14,6 @@ springdocOpenApiStarterWebUiVersion = '2.7.0'
 # TODO remove when migrating to springdoc 2.7+
 swaggerAnnotationsVersion = '2.2.41'
 wiremockSpringIntegrationVersion = '3.9.0'
-# Spring boot dep manegment override version is 5.3.1 which is incompotible with
-# TODO delete this override when migrating to SB 3.4+
-httpclient5Version = '5.4.3'
 
 [libraries]
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
@@ -70,12 +67,11 @@ cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberV
 # for junit 5
 cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion' }
 cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion' }
-# test suite for junit 5 because gradle can't run tests not-class-based tests
+# test suite for junit 5 because Gradle can't run tests not-class-based tests
 junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
 sb-wiremock = { module = 'org.wiremock.integrations:wiremock-spring-boot', version.ref = 'wiremockSpringIntegrationVersion' }
-http-components-client5 = { module = 'org.apache.httpcomponents.client5:httpclient5', version.ref = 'httpclient5Version' }
 
 [plugins]
 spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
@@ -122,7 +118,6 @@ spring-test = [
     'test-container-kafka',
     'spring-security-test',
     'sb-wiremock',
-    #    'http-components-client5',
     'apache-commons-codec'
 ]
 
