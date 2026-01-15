@@ -3,6 +3,7 @@ package com.github.jenkaby.config.messaging;
 import lombok.AllArgsConstructor;
 import org.apache.avro.specific.SpecificRecord;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
@@ -36,7 +37,7 @@ public class TestKafkaMessageConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> testJsonKafkaContainerFactory(
-            ConsumerFactory<String, Object> jsonConsumerFactory) {
+            @Qualifier("jsonConsumerFactory") ConsumerFactory<String, Object> jsonConsumerFactory) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
 
         factory.setConsumerFactory(jsonConsumerFactory);
@@ -49,7 +50,7 @@ public class TestKafkaMessageConsumerConfig {
     @Bean
     @SuppressWarnings("unchecked")
     public ConcurrentKafkaListenerContainerFactory<String, Object> testAvroContainerFactory(
-            ConsumerFactory<String, ? super SpecificRecord> avroConsumerFactory) {
+            @Qualifier("avroConsumerFactory") ConsumerFactory<String, ? super SpecificRecord> avroConsumerFactory) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
         factory.setConsumerFactory((ConsumerFactory<String, Object>) avroConsumerFactory);
         factory.getContainerProperties().setGroupId(testConsumerGroupId);
