@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
 }
 
 group = 'com.github.jenkaby.mega.componenttest'
@@ -14,6 +12,11 @@ version = '0.0.1-SNAPSHOT'
 //     }
 // }
 
+dependencyManagement {
+    imports {
+        mavenBom libs.cucumber.bom.get().toString()
+    }
+}
 
 dependencies {
     testImplementation project(':service')
@@ -21,7 +24,7 @@ dependencies {
     testImplementation libs.sb.starter.web
     testImplementation libs.spring.security.oauth2.jose
 
-//    used to wrap each scenario in txn
+//    used to wrap each scenario by txn
     testImplementation libs.spring.tx
     testImplementation libs.spring.kafka
     testImplementation libs.bundles.kafka.avro
@@ -37,6 +40,7 @@ dependencies {
     testRuntimeOnly libs.junit.platform.launcher
 }
 
+// This task is defined on the parent level
 //tasks.named('test') {
 //    useJUnitPlatform()
 //    systemProperty("cucumber.junit-platform.naming-strategy", "long")

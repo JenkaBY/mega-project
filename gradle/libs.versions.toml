@@ -1,21 +1,26 @@
 [versions]
-springVersion = '3.4.13'
+springBootVersion = '3.5.9'
 springDepManagementVersion = '1.1.7'
-mapStructVersion = '1.6.2'
-hypersistanceUtilsHibernateVersion = '3.8.3'
-apacheAvroVersion = '1.11.3'
+mapStructVersion = '1.6.3'
+hypersistanceUtilsHibernateVersion = '3.14.1'
+apacheAvroVersion = '1.11.4'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.20.1'
 dependencyCheckVersion = '11.1.1'
+testContainersVersion = '2.0.3'
 # TODO upgrade version when app is migrated to SB3.4+
 # see the compatibility matrix
 springdocOpenApiStarterWebUiVersion = '2.7.0'
 # TODO remove when migrating to springdoc 2.7+
 swaggerAnnotationsVersion = '2.2.41'
-wiremockSpringIntegrationVersion = '3.9.0'
 
 [libraries]
+# BOM files
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBootVersion" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainersVersion" }
+cucumber-bom = { module = "io.cucumber:cucumber-bom", version.ref = "cucumberVersion" }
+
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
 sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
 sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
@@ -51,30 +56,30 @@ sb-conf-processor = { module = 'org.springframework.boot:spring-boot-configurati
 
 ## TESTS deps
 # unit test deps
+mockito-core = { module = "org.mockito:mockito-core" }
 sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
 sb-testcontainers = { module = 'org.springframework.boot:spring-boot-testcontainers' }
 assertj-core = { module = 'org.assertj:assertj-core' }
 awaitility = { module = 'org.awaitility:awaitility' }
 spring-security-test = { module = 'org.springframework.security:spring-security-test' }
 
-test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
-test-container-postgres = { module = 'org.testcontainers:postgresql' }
-test-container-kafka = { module = 'org.testcontainers:kafka' }
+test-container-junit = { module = 'org.testcontainers:testcontainers-junit-jupiter' }
+test-container-postgres = { module = 'org.testcontainers:testcontainers-postgresql' }
+test-container-kafka = { module = 'org.testcontainers:testcontainers-kafka' }
 # component tests fail without this dependency due to some classpath issue
 apache-commons-codec = { module = 'commons-codec:commons-codec' }
 
-cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
+cucumber-java = { module = 'io.cucumber:cucumber-java' }
 # for junit 5
-cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion' }
-cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion' }
+cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine' }
+cucumber-spring = { module = 'io.cucumber:cucumber-spring' }
 # test suite for junit 5 because Gradle can't run tests not-class-based tests
 junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
-sb-wiremock = { module = 'org.wiremock.integrations:wiremock-spring-boot', version.ref = 'wiremockSpringIntegrationVersion' }
 
 [plugins]
-spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
+spring-boot = { id = 'org.springframework.boot', version.ref = 'springBootVersion' }
 spring-dependency-management = { id = 'io.spring.dependency-management', version.ref = 'springDepManagementVersion' }
 davidmc24-avro = { id = 'com.github.davidmc24.gradle.plugin.avro', version.ref = 'gradlePlugingAvro' }
 owasp-dependency-check = { id = 'org.owasp.dependencycheck', version.ref = 'dependencyCheckVersion' }
@@ -111,14 +116,13 @@ hibernate-extention = [
 ]
 
 spring-test = [
-    'sb-starter-test',
-    'sb-testcontainers',
     'test-container-junit',
     'test-container-postgres',
     'test-container-kafka',
+    'sb-testcontainers',
+    'sb-starter-test',
     'spring-security-test',
-    'sb-wiremock',
-    'apache-commons-codec'
+    'apache-commons-codec' # ??? WTF???
 ]
 
 cucumber-test = [
