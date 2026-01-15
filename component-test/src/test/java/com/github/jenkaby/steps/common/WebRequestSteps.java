@@ -53,7 +53,7 @@ public class WebRequestSteps {
                                                   @Nullable @Transpose DataTable queryParams) {
 
         var request = new HttpEntity<>(scenarioContext.getRequestBody(), scenarioContext.getRequestHeaders());
-        var uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + endpoint);
+        var uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:" + port + endpoint);
         Optional.ofNullable(queryParams)
                 .map(DataTable::asMap)
                 .orElse(Map.of())
