@@ -7,7 +7,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 @Configuration
 public class SpyConfig {
 
-    @MockitoSpyBean
+    @MockitoSpyBean(name = "transactionJsonListenerServiceSpy")
     private TransactionJsonListenerService transactionJsonListenerService;
 
 }
