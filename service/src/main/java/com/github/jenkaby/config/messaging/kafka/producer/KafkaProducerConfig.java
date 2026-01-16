@@ -57,6 +57,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
+    @SuppressWarnings({"unchecked", "raw"}) // to avoid ConsumerFactory raw type warning
     public KafkaTemplate<?, ?> avroKafkaTemplate(@Qualifier("avroConsumerFactory") ConsumerFactory avroConsumerFactory) {
         KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory());
         log.info("Initialized avro kafkaTemplate {}", kafkaTemplate);
