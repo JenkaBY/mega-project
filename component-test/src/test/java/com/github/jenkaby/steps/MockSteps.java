@@ -7,7 +7,6 @@ import io.cucumber.java.en.Then;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.*;
 @RequiredArgsConstructor
 public class MockSteps {
 
-    @Qualifier("transactionJsonListenerServiceSpy")
     private final TransactionJsonListenerService transactionJsonListenerService;
 
     @After

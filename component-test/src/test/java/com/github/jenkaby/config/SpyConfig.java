@@ -1,13 +1,17 @@
 package com.github.jenkaby.config;
 
 import com.github.jenkaby.service.TransactionJsonListenerService;
+import org.mockito.Mockito;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.context.annotation.Primary;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class SpyConfig {
 
-    @MockitoSpyBean(name = "transactionJsonListenerServiceSpy")
-    private TransactionJsonListenerService transactionJsonListenerService;
-
+    @Bean
+    @Primary
+    TransactionJsonListenerService transactionJsonListenerServiceSpy(TransactionJsonListenerService transactionJsonListenerService) {
+        return Mockito.spy(transactionJsonListenerService);
+    }
 }
