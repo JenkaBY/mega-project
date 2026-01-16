@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
@@ -39,7 +40,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -68,16 +68,19 @@ public class SecurityConfig {
     @Order(2)
     @Bean
     public SecurityFilterChain bearer(HttpSecurity http,
-                                                   Converter<Jwt, AbstractAuthenticationToken> authenticationConverter,
+                                      Converter<Jwt, AbstractAuthenticationToken> authenticationConverter,
                                       JwtDecoder jwtDecoder
     ) throws Exception {
         return http
                 .securityMatcher(
+
                         new OrRequestMatcher(
                                 PathRequest.toStaticResources().atCommonLocations(),
                                 new AndRequestMatcher(
-                                        antMatcher("/api/v1/secured-resources/**"),
-                                        RequestMatchers.not(antMatcher("/api/v1/secured-resources/basic/**"))
+                                        PathPatternRequestMatcher.withDefaults().matcher("/api/v1/secured-resources/**"),
+                                        RequestMatchers.not(
+                                                PathPatternRequestMatcher.withDefaults().matcher("/api/v1/secured-resources/basic/**")
+                                        )
                                 )
                         )
                 )
