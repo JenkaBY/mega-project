@@ -32,7 +32,6 @@ jobs:
 
   build:
     name: "Gradle build on JDK 21"
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources

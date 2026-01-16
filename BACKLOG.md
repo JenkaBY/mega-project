@@ -36,7 +36,8 @@ TODO:
   for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor
    [recordLatencyBeanPostProcessorDynamicProxy] is declared through a non-static factory method on that class; consider declaring it as static instead.
   ```
-  - [ ] Investigate why do we need spring data and spring jpa simultaneously ?
+- [ ] Investigate why do we need spring data and spring jpa simultaneously ?
+- [ ] Add docker image caching to GitHub CI for faster builds
 
 Implemented:
 - gradle
