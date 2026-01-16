@@ -1,7 +1,5 @@
 package com.github.jenkaby.transformer;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jenkaby.model.AuthTokenType;
 import com.github.jenkaby.service.support.ProxyType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -11,6 +9,8 @@ import io.cucumber.java.ParameterType;
 import io.micrometer.core.instrument.Tag;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpMethod;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

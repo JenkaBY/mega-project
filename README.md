@@ -72,3 +72,9 @@ To apply OpenRewrite recipes run the following command:
 ```shell
 ./gradlew rewriteRun --init-script init.gradle -Drewrite.activeRecipe=org.openrewrite.FindSpringUses
 ```
+
+or add/uncomment recipes in the init.gradle file and run
+
+```shell
+./gradlew rewriteRun --init-script init.gradle
+```

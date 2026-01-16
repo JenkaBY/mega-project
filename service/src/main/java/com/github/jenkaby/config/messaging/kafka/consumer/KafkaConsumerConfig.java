@@ -14,7 +14,7 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +26,9 @@ import org.springframework.kafka.listener.ConsumerRecordRecoverer;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.converter.JsonMessageConverter;
+import org.springframework.kafka.support.converter.JacksonJsonMessageConverter;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> stringKafkaContainerFactory(
             KafkaTemplate<Object, Object> commonKafkaTemplate) {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
-        var consumerProps = kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable());
+        var consumerProps = kafkaProperties.buildConsumerProperties();
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
         var commonErrorHandler = new DefaultErrorHandler(
                 new SimpleDltRecoverer(commonKafkaTemplate),
@@ -86,7 +86,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, SpecificRecord> avroConsumerFactory() {
-        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable()));
+        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
 //         avro properties
@@ -113,7 +113,7 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(jsonConsumerFactory());
 
 //        allows to dynamic argument type matching for record listeners
-        factory.setRecordMessageConverter(new JsonMessageConverter());
+        factory.setRecordMessageConverter(new JacksonJsonMessageConverter());
 
         var errorHandler = new DefaultErrorHandler(
                 deadLetterRecoverer(commonKafkaTemplate),
@@ -131,7 +131,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, Object> jsonConsumerFactory() {
-        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable()));
+        Map<String, Object> props = new HashMap<>(kafkaProperties.buildConsumerProperties());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
 
@@ -139,9 +139,9 @@ public class KafkaConsumerConfig {
 //        JsonDeserializer works with predefined type of payload but isn't universal solution
 //        it's better for performance to use ByteArrayDeserializer instead of StringDeserializer
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ByteArrayDeserializer.class);
-        props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-        props.put(JsonDeserializer.REMOVE_TYPE_INFO_HEADERS, true);
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "com.github.jenkaby.model");
+        props.put(JacksonJsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        props.put(JacksonJsonDeserializer.REMOVE_TYPE_INFO_HEADERS, true);
+        props.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "com.github.jenkaby.model");
 
         var consumerFactory = new DefaultKafkaConsumerFactory<String, Object>(props);
         return consumerFactory;

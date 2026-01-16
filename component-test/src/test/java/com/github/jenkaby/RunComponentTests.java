@@ -24,7 +24,7 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 // TODO move the glue code to separate package
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.github.jenkaby")
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @skip")
-// uncomment the line below. comment out the line above and mark @run the test to be executed
+// uncomment the line below comment out the line above and mark @run the test to be executed
 //@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@run")
 public class RunComponentTests {
 

@@ -14,7 +14,7 @@ Feature: Describe endpoints related to KafkaMessageController
       | msgKey  | msgData              |
       | msgKey1 | message payload data |
 
-  Scenario Outline: DLT incoming message when message key contains 'error'
+  Scenario Outline: forward message to DLT when message key contains 'error'
     Given application is started
     When a GET request has been made to '/api/kafka/send' endpoint with query parameters
       | key      | payload   |
@@ -62,7 +62,7 @@ Feature: Describe endpoints related to KafkaMessageController
       | topic                            | msgKey  | status | txnId |
       | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
 
-  Scenario Outline: DLT incoming message when JSON message sent via POST endpoint and message key contains 'error'
+  Scenario Outline: a message should be forwarded to DLT when JSON message sent via POST endpoint and message key contains 'error'
     Given application is started
     And the following TransactionEvent payload is
       | status   | amount | txnId   |

@@ -3,10 +3,11 @@ package com.github.jenkaby.config.security;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
+import org.springframework.boot.security.oauth2.server.resource.autoconfigure.servlet.OAuth2ResourceServerAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -36,6 +37,7 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatchers;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,7 +52,8 @@ public class SecurityConfig {
 
     @Order(1)
     @Bean
-    public SecurityFilterChain basic(HttpSecurity http) throws Exception {
+    public SecurityFilterChain basic(HttpSecurity http,
+                                     @Qualifier("customCorsConfiguration") CorsConfigurationSource corsConfigurationSource) throws Exception {
 
         return http
                 .securityMatcher("/api/v1/secured-resources/basic/**")
@@ -60,6 +63,7 @@ public class SecurityConfig {
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
+                .cors(customizer -> customizer.configurationSource(corsConfigurationSource))
 //                the UserDetailsService bean is injected automatically
 //                .userDetailsService(userDetailsService())
                 .build();
@@ -69,11 +73,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain bearer(HttpSecurity http,
                                       Converter<Jwt, AbstractAuthenticationToken> authenticationConverter,
-                                      JwtDecoder jwtDecoder
+                                      JwtDecoder jwtDecoder,
+                                      @Qualifier("customCorsConfiguration") CorsConfigurationSource corsConfigurationSource
     ) throws Exception {
         return http
-                .securityMatcher(
 
+                .securityMatcher(
                         new OrRequestMatcher(
                                 PathRequest.toStaticResources().atCommonLocations(),
                                 new AndRequestMatcher(
@@ -91,6 +96,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/v1/secured-resources/**").authenticated();
                     auth.anyRequest().anonymous();
                 })
+                .cors(customizer -> customizer.configurationSource(corsConfigurationSource))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(resourceServer -> {
                     resourceServer.jwt(jwtConfigurer ->

@@ -24,10 +24,10 @@ public class NotificationListener {
                                              @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
                                              ConsumerRecord<String, String> raw,
                                              Acknowledgment acknowledgment) {
-        log.info("MessageKey [{}] Payload [{}]", messageKey, payload);
+        log.info("MessageKey [{}] Payload [{}] was handled", messageKey, payload);
         headers.forEach((headerKey, value) -> log.debug("Header: {}={}", headerKey, value));
         if (messageKey != null && messageKey.toLowerCase().contains("error")) {
-            throw new RuntimeException("Exception based on message key");
+            throw new RuntimeException("Exception based on message key. From " + this.getClass());
         }
 
         acknowledgment.acknowledge();

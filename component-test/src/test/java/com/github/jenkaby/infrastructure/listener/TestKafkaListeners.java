@@ -2,7 +2,6 @@ package com.github.jenkaby.infrastructure.listener;
 
 import com.github.jenkaby.context.LocalMessagesStore;
 import com.github.jenkaby.megaapp.avro.payload.v0.TransactionEventAvro;
-import com.github.jenkaby.model.TransactionEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -39,8 +38,8 @@ public class TestKafkaListeners {
     public void handleTransactionJsonTopic(
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
-            ConsumerRecord<String, TransactionEvent> message) {
-        log.info("[TEST] JSON Message received '{}' from topic '{}'", message.value(), topic);
+            ConsumerRecord<String, ?> message) {
+        log.info("[TEST] JSON Message received '{}' from topic '{}'", message.value().getClass(), topic);
         log.debug("[TEST] JSON Message header size '{}' from topic '{}'", message.headers().toArray().length, topic);
         message.headers().forEach(
                 h -> log.info("[TEST] JSON header key:'{}'='{}' from topic '{}'",

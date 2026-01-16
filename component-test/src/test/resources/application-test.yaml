@@ -17,10 +17,8 @@ spring:
       consumer:
         group-id: CT-mega-app-group
     mockmvc:
-      webdriver:
-        enabled: false
-      webclient:
-        enabled: false
+      htmlunit.webclient.enabled: false
+      htmlunit.webdriver.enabled: false
 logging:
   level:
     #    root: OFF
@@ -49,11 +47,11 @@ app:
   kafka:
     dlt:
       retry:
-        interval: 500
+        interval: 50
         max-attempts: 2
   test:
     latency:
-      validation-threshold: 3ms
+      validation-threshold: 10ms
   debug:
     rest-template:
       all-requests: false

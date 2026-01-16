@@ -35,7 +35,7 @@ public class TransactionAvroListener {
         log.info("MessageKey [{}] Payload [{}]", messageKey, payload);
         headers.forEach((headerKey, value) -> log.debug("Header: {}={}", headerKey, value));
         if (messageKey != null && messageKey.toLowerCase().contains("error")) {
-            throw new RuntimeException("Exception based on message key");
+            throw new RuntimeException("Exception based on message key. From " + this.getClass());
         }
 
         var event = mapper.toEntity(payload);

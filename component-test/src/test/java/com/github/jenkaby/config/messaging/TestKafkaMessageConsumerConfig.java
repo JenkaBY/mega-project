@@ -5,7 +5,7 @@ import org.apache.avro.specific.SpecificRecord;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +13,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.support.converter.JacksonJsonMessageConverter;
 
 @AllArgsConstructor
 @Configuration
@@ -26,7 +27,7 @@ public class TestKafkaMessageConsumerConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> testStringKafkaContainerFactory() {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
-        var consumerProps = kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable());
+        var consumerProps = kafkaProperties.buildConsumerProperties();
         factory.setConsumerFactory(new DefaultKafkaConsumerFactory<>(consumerProps));
         factory.getContainerProperties().setGroupId(testConsumerGroupId);
         factory.setAutoStartup(true);
@@ -41,6 +42,8 @@ public class TestKafkaMessageConsumerConfig {
         var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
 
         factory.setConsumerFactory(jsonConsumerFactory);
+
+        factory.setRecordMessageConverter(new JacksonJsonMessageConverter());
         factory.getContainerProperties().setGroupId(testConsumerGroupId);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
