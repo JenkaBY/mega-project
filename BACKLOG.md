@@ -1,9 +1,9 @@
-In progress
-
+In progress:
 - [ ] Measure performance difference between AOP, BPP(CGLib, DynamicProxy), Micrometer Timed and native
+- [ ] play with the openrewrite library
+
 
 TODO:
-
 - [ ] add kafka-gitops approach to create topics and acl [kafka-gitops](https://github.com/devshawn/kafka-gitops)
 - [ ] use the best-practise for topic name
   convention [dev.io](https://dev.to/devshawn/apache-kafka-topic-naming-conventions-3do6)
@@ -19,12 +19,27 @@ TODO:
     - [ ] Grafana as logs collector
     - [ ] Grafana as traces collector
 - [ ] move testcontainers to separate spring profile
-- [ ] use embedded external dependencies with a embedded spring profile for local development and tests
+- [ ] use embedded external dependencies with an embedded spring profile for local development and tests
 - [ ] use spun up services for faster local testing
 - [ ] investigate and apply `@TestBean`
+- [ ] Consider [the replacement](https://plugins.gradle.org/plugin/io.github.martinsjavacode.avro-gradle-plugin) for the
+  archived avro plugin (com.github.davidmc24.gradle.plugin.avro)
+- [ ] Resolve the warning:
+  ```
+     org.springframework.data.repository.config.RepositoryConfigurationExtensionSupport - Spring Data JDBC - Could not safely identify 
+  store assignment for repository candidate interface com.github.jenkaby.persistance.repository.MessageLogRepository;
+  If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations:
+   org.springframework.data.relational.core.mapping.Table.
+  ```
+  ```
+  Bean 'telemetryConfig' of type [com.github.jenkaby.config.telemetry.TelemetryConfig$$SpringCGLIB$$0] is not eligible 
+  for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor
+   [recordLatencyBeanPostProcessorDynamicProxy] is declared through a non-static factory method on that class; consider declaring it as static instead.
+  ```
+- [ ] Investigate why do we need spring data and spring jpa simultaneously ?
+- [ ] Add docker image caching to GitHub CI for faster builds
 
 Implemented:
-
 - gradle
     - [x] multi projects structure
     - [x] version catalog

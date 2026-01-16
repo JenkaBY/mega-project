@@ -7,6 +7,8 @@ import com.github.jenkaby.service.support.MetricRecordService;
 import com.github.jenkaby.service.support.ProxyType;
 import com.github.jenkaby.service.support.annotation.RecordMetric;
 import io.micrometer.core.instrument.Tag;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInvocation;
@@ -18,8 +20,6 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;

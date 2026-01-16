@@ -1,6 +1,7 @@
 plugins {
 //    version catalog requires java plugin in the root project
     id 'java'
+    alias(libs.plugins.spring.dependency.management) apply false
 }
 
 allprojects {
@@ -8,14 +9,48 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            url 'https://packages.confluent.io/maven/'
+            url = 'https://packages.confluent.io/maven/'
         }
     }
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
+            languageVersion = JavaLanguageVersion.of(25)
         }
+    }
+}
+
+def javaProjects = subprojects.findAll { it.name != 'load-test' }
+
+configure(javaProjects) {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+
+    configurations {
+        mockitoAgent
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom libs.spring.boot.bom.get().toString()
+            mavenBom libs.testcontainers.bom.get().toString()
+        }
+    }
+
+    dependencies {
+        testImplementation libs.mockito.core
+
+        mockitoAgent(libs.mockito.core) {
+            transitive = false
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed", "standardOut", "standardError"
+        }
+        jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
     }
 }
 

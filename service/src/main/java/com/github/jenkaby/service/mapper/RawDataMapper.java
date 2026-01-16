@@ -1,10 +1,10 @@
 package com.github.jenkaby.service.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jenkaby.model.TransactionEvent;
 import lombok.SneakyThrows;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 

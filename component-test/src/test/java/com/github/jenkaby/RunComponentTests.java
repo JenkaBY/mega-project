@@ -11,8 +11,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import static io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME;
@@ -24,7 +24,7 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 // TODO move the glue code to separate package
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.github.jenkaby")
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @skip")
-// uncomment the line below. comment out the line above and mark @run the test to be executed
+// uncomment the line below comment out the line above and mark @run the test to be executed
 //@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@run")
 public class RunComponentTests {
 
@@ -36,14 +36,13 @@ public class RunComponentTests {
     public static class ApplicationContextTestConfiguration {
 
         @ServiceConnection
-        public final static PostgreSQLContainer<?> postgresContainer
-                = new PostgreSQLContainer<>(DockerImageName.parse("postgres:14-alpine"));
+        public final static PostgreSQLContainer postgresContainer
+                = new PostgreSQLContainer(DockerImageName.parse("postgres:14-alpine"));
 
         @ServiceConnection
-//        TODO replace with ConfluentKafkaContainer
-        public static KafkaContainer kafka
+        public static ConfluentKafkaContainer kafka
 //                Must be aligned with being used in lib.versions.toml
-                = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.1"));
+                = new ConfluentKafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:7.5.1"));
 
 
         @DynamicPropertySource

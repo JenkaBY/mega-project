@@ -23,10 +23,10 @@ public class KafkaSteps {
     public void verifyNumberOfMessagesReceivedOnTheTopic(int expectedNumberOfMsg, String topicName) {
         await()
                 .pollInterval(200, TimeUnit.MILLISECONDS)
-                .atMost(Duration.of(3, ChronoUnit.SECONDS))
+                .atMost(Duration.of(10, ChronoUnit.SECONDS))
                 .untilAsserted(() -> {
                     List<LocalMessagesStore.Message<String>> messages = messagesStore.getMessagesOnTopic(topicName, String.class);
-                    log.info("[TEST] ++++  messages : {}", messages);
+                    log.info("[TEST]++++ '{}' messages : {}", topicName, messages);
                     assertThat(messages).hasSize(expectedNumberOfMsg);
                 });
     }

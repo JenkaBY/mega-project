@@ -1,7 +1,7 @@
 package com.github.jenkaby.config;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 public class WebConfig {
 

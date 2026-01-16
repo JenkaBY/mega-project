@@ -64,3 +64,17 @@ To run Gatling test see the file [README.md](./load-test/README.md)
 ### Component test (Load test)
 
 To run component test see the file [README.md](./component-test/README.md)
+
+## OpenRewrite usage
+
+To apply OpenRewrite recipes run the following command:
+
+```shell
+./gradlew rewriteRun --init-script init.gradle -Drewrite.activeRecipe=org.openrewrite.FindSpringUses
+```
+
+or add/uncomment recipes in the init.gradle file and run
+
+```shell
+./gradlew rewriteRun --init-script init.gradle
+```

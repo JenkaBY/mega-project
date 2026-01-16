@@ -1,7 +1,6 @@
 package com.github.jenkaby.context;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jenkaby.config.WebConfig;
 import io.cucumber.spring.ScenarioScope;
 import lombok.Getter;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

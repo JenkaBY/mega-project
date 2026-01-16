@@ -19,7 +19,7 @@ public class TransactionJsonListenerService {
 
     public void process(Map<String, Object> headers, TransactionEvent payload, String messageKey, ConsumerRecord<String, TransactionEvent> raw) {
         if (messageKey != null && messageKey.toLowerCase().contains("error")) {
-            throw new RuntimeException("Exception based on message key");
+            throw new RuntimeException("Exception based on message key. From " + this.getClass());
         }
         if (messageKey != null && messageKey.equals("non-retryable-exception")) {
             throw new KafkaNonRetryableException("Message key trigger this exception. Kafka must not retry consuming in this case");

@@ -1,11 +1,21 @@
 plugins {
     id 'java'
-    id 'io.gatling.gradle' version '3.13.5.2'
+    id 'io.gatling.gradle' version '3.14.9.5'
 }
 
 group = 'com.github.jenkaby.gatling'
 version = '0.0.1-SNAPSHOT'
 
+// Workaround for Gatling plugin compatibility with Gradle 9.x
+ext {
+    reportsDir = layout.buildDirectory.dir("reports").get().asFile
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
 
 repositories {
     mavenCentral()

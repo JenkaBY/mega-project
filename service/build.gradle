@@ -31,7 +31,7 @@ compileJava {
 dependencies {
     implementation libs.bundles.spring.web.application
     implementation libs.bundles.spring.security
-    implementation libs.sb.starter.aop
+    implementation libs.sb.starter.aspectj
     implementation libs.bundles.kafka
     implementation libs.bundles.kafka.avro
     implementation libs.bundles.hibernate.extention
@@ -52,12 +52,12 @@ dependencies {
     testRuntimeOnly libs.junit.platform.launcher
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed", "standardOut", "standardError"
-    }
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//    testLogging {
+//        events "passed", "skipped", "failed", "standardOut", "standardError"
+//    }
+//}
 
 avro {
     createSetters = false

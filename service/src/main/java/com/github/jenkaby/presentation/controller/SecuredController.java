@@ -1,7 +1,5 @@
 package com.github.jenkaby.presentation.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jenkaby.config.security.support.LoggedUser;
 import com.github.jenkaby.config.security.support.LoggedUserInfo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -25,6 +23,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -100,7 +100,7 @@ public class SecuredController {
             var jsonString = mapper.writeValueAsString(jwtAuthToken);
 //            log.info("IAM {}", jsonString);
             return ResponseEntity.ok(jwtAuthToken.getAuthorities());
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
                     "status", "MALFORMED_RESPONSE"
             ));

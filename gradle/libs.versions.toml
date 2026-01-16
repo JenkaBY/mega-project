@@ -1,34 +1,37 @@
 [versions]
-springVersion = '3.4.13'
+springBootVersion = '4.0.1'
 springDepManagementVersion = '1.1.7'
-mapStructVersion = '1.6.2'
-hypersistanceUtilsHibernateVersion = '3.8.3'
-apacheAvroVersion = '1.11.3'
+mapStructVersion = '1.6.3'
+hypersistanceUtilsHibernateVersion = '3.14.1'
+apacheAvroVersion = '1.11.4'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.20.1'
 dependencyCheckVersion = '11.1.1'
+testContainersVersion = '2.0.3'
 # TODO upgrade version when app is migrated to SB3.4+
-# see the compatibility matrix
-springdocOpenApiStarterWebUiVersion = '2.7.0'
-# TODO remove when migrating to springdoc 2.7+
-swaggerAnnotationsVersion = '2.2.41'
-wiremockSpringIntegrationVersion = '3.9.0'
-# Spring boot dep manegment override version is 5.3.1 which is incompotible with
-# TODO delete this override when migrating to SB 3.4+
-httpclient5Version = '5.4.3'
+# see the compatibility matrix at https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot
+springdocOpenApiStarterWebUiVersion = '3.0.1'
+
 
 [libraries]
+# BOM files
+spring-boot-bom = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBootVersion" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainersVersion" }
+cucumber-bom = { module = "io.cucumber:cucumber-bom", version.ref = "cucumberVersion" }
+# libs
 sb-starter-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
 sb-starter-data = { module = 'org.springframework.boot:spring-boot-starter-data-jpa' }
-sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
-sb-starter-aop = { module = 'org.springframework.boot:spring-boot-starter-aop' }
+sb-starter-web = { module = 'org.springframework.boot:spring-boot-starter-webmvc' }
+sb-starter-aspectj = { module = 'org.springframework.boot:spring-boot-starter-aspectj' }
+sb-starter-restclient = { module = 'org.springframework.boot:spring-boot-starter-restclient' }
 sb-starter-logging = { module = 'org.springframework.boot:spring-boot-starter-logging' }
 sb-starter-actuator = { module = 'org.springframework.boot:spring-boot-starter-actuator' }
+sb-starter-liquibase = { module = 'org.springframework.boot:spring-boot-starter-liquibase' }
 spring-tx = { module = 'org.springframework:spring-tx' }
 
 # security
-sb-starter-auth2-resource-server = { module = 'org.springframework.boot:spring-boot-starter-oauth2-resource-server' }
+sb-starter-auth2-resource-server = { module = 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server' }
 # security testing
 spring-security-oauth2-jose = { module = 'org.springframework.security:spring-security-oauth2-jose' }
 
@@ -38,12 +41,11 @@ liquibase = { module = 'org.liquibase:liquibase-core' }
 postgres-driver = { module = 'org.postgresql:postgresql' }
 mapstruct = { module = 'org.mapstruct:mapstruct', version.ref = 'mapStructVersion' }
 mapstruct-processor = { module = 'org.mapstruct:mapstruct-processor', version.ref = 'mapStructVersion' }
-hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-63', version.ref = 'hypersistanceUtilsHibernateVersion' }
+hypersistence-utils-hibernate = { module = 'io.hypersistence:hypersistence-utils-hibernate-71', version.ref = 'hypersistanceUtilsHibernateVersion' }
 jackson-xmlbind = { module = 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations' }
 springdoc-starter-webmvc-ui = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'springdocOpenApiStarterWebUiVersion' }
-swagger-annotations = { module = 'io.swagger.core.v3:swagger-annotations', version.ref = 'swaggerAnnotationsVersion' }
 # kafka
-spring-kafka = { module = 'org.springframework.kafka:spring-kafka' }
+spring-kafka = { module = 'org.springframework.boot:spring-boot-starter-kafka' }
 kafka-schema-registry = { module = "io.confluent:kafka-schema-registry-client", version.ref = 'confluentKafkaVersion' }
 kafka-avro-serialiazer = { module = "io.confluent:kafka-avro-serializer", version.ref = 'confluentKafkaVersion' }
 # TODO check whether it's required for gradle avro plugin or not
@@ -54,31 +56,36 @@ sb-conf-processor = { module = 'org.springframework.boot:spring-boot-configurati
 
 ## TESTS deps
 # unit test deps
+mockito-core = { module = "org.mockito:mockito-core" }
 sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
+sb-starter-webmvc-test = { module = 'org.springframework.boot:spring-boot-starter-webmvc-test' }
 sb-testcontainers = { module = 'org.springframework.boot:spring-boot-testcontainers' }
+sb-starter-restclient-test = { module = 'org.springframework.boot:spring-boot-starter-restclient-test' }
+sb-resttestclient = { module = 'org.springframework.boot:spring-boot-resttestclient' }
+sb-starter-jdbc-test = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc-test' }
+sb-starter-jpa-test = { module = 'org.springframework.boot:spring-boot-starter-data-jpa-test' }
+sb-starter-liquibase-test = { module = 'org.springframework.boot:spring-boot-starter-liquibase-test' }
 assertj-core = { module = 'org.assertj:assertj-core' }
 awaitility = { module = 'org.awaitility:awaitility' }
-spring-security-test = { module = 'org.springframework.security:spring-security-test' }
+sb-starter-security-test = { module = 'org.springframework.boot:spring-boot-starter-security-test' }
 
-test-container-junit = { module = 'org.testcontainers:junit-jupiter' }
-test-container-postgres = { module = 'org.testcontainers:postgresql' }
-test-container-kafka = { module = 'org.testcontainers:kafka' }
+test-container-junit = { module = 'org.testcontainers:testcontainers-junit-jupiter' }
+test-container-postgres = { module = 'org.testcontainers:testcontainers-postgresql' }
+test-container-kafka = { module = 'org.testcontainers:testcontainers-kafka' }
 # component tests fail without this dependency due to some classpath issue
 apache-commons-codec = { module = 'commons-codec:commons-codec' }
 
-cucumber-java = { module = 'io.cucumber:cucumber-java', version.ref = 'cucumberVersion' }
+cucumber-java = { module = 'io.cucumber:cucumber-java' }
 # for junit 5
-cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine', version.ref = 'cucumberVersion' }
-cucumber-spring = { module = 'io.cucumber:cucumber-spring', version.ref = 'cucumberVersion' }
-# test suite for junit 5 because gradle can't run tests not-class-based tests
+cucumber-junit = { module = 'io.cucumber:cucumber-junit-platform-engine' }
+cucumber-spring = { module = 'io.cucumber:cucumber-spring' }
+# test suite for junit 5 because Gradle can't run tests not-class-based tests
 junit-platform-suite = { module = 'org.junit.platform:junit-platform-suite' }
 # test launcher
 junit-platform-launcher = { module = 'org.junit.platform:junit-platform-launcher' }
-sb-wiremock = { module = 'org.wiremock.integrations:wiremock-spring-boot', version.ref = 'wiremockSpringIntegrationVersion' }
-http-components-client5 = { module = 'org.apache.httpcomponents.client5:httpclient5', version.ref = 'httpclient5Version' }
 
 [plugins]
-spring-boot = { id = 'org.springframework.boot', version.ref = 'springVersion' }
+spring-boot = { id = 'org.springframework.boot', version.ref = 'springBootVersion' }
 spring-dependency-management = { id = 'io.spring.dependency-management', version.ref = 'springDepManagementVersion' }
 davidmc24-avro = { id = 'com.github.davidmc24.gradle.plugin.avro', version.ref = 'gradlePlugingAvro' }
 owasp-dependency-check = { id = 'org.owasp.dependencycheck', version.ref = 'dependencyCheckVersion' }
@@ -87,11 +94,12 @@ owasp-dependency-check = { id = 'org.owasp.dependencycheck', version.ref = 'depe
 spring-web-application = [
     'sb-starter-jdbc',
     'sb-starter-data',
+    'sb-starter-liquibase',
     'sb-starter-web',
     'sb-starter-actuator',
     'sb-starter-logging',
+    'sb-starter-restclient',
     'springdoc-starter-webmvc-ui',
-    'swagger-annotations',
     'liquibase',
     'mapstruct'
 ]
@@ -115,15 +123,19 @@ hibernate-extention = [
 ]
 
 spring-test = [
-    'sb-starter-test',
-    'sb-testcontainers',
     'test-container-junit',
     'test-container-postgres',
     'test-container-kafka',
-    'spring-security-test',
-    'sb-wiremock',
-    #    'http-components-client5',
-    'apache-commons-codec'
+    'sb-testcontainers',
+    'sb-starter-test',
+    'sb-starter-webmvc-test',
+    'sb-starter-restclient-test',
+    'sb-resttestclient',
+    'sb-starter-jdbc-test',
+    'sb-starter-jpa-test',
+    'sb-starter-liquibase-test',
+    'sb-starter-security-test',
+    'apache-commons-codec' # ??? WTF??? TODO Remove
 ]
 
 cucumber-test = [

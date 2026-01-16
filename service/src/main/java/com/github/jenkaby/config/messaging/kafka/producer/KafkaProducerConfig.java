@@ -12,7 +12,7 @@ import org.apache.kafka.common.serialization.BytesSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.DelegatingByTypeSerializer;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,19 +44,20 @@ public class KafkaProducerConfig {
                                 Map.entry(String.class, new StringSerializer()),
                                 Map.entry(SpecificRecord.class, new KafkaAvroSerializer()),
                                 Map.entry(GenericRecord.class, new KafkaAvroSerializer()),
-                                Map.entry(JsonPayload.class, new JsonSerializer<>())
+                                Map.entry(JsonPayload.class, new JacksonJsonSerializer<>())
                         )
                 ), true // required to be able to convert to parent class
         );
 
         return new DefaultKafkaProducerFactory<>(
-                kafkaProperties.buildConsumerProperties(sslBundles.getIfAvailable()),
+                kafkaProperties.buildConsumerProperties(),
                 new StringSerializer(), // key serializer
                 delegatingByTypeSerializer // value serializer
         );
     }
 
     @Bean
+    @SuppressWarnings({"unchecked", "raw"}) // to avoid ConsumerFactory raw type warning
     public KafkaTemplate<?, ?> avroKafkaTemplate(@Qualifier("avroConsumerFactory") ConsumerFactory avroConsumerFactory) {
         KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(kafkaProducerFactory());
         log.info("Initialized avro kafkaTemplate {}", kafkaTemplate);

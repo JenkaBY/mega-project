@@ -11,10 +11,10 @@ Feature: Describe endpoints related to KafkaMessageController
       | messageKey | payload   |
       | <msgKey>   | <msgData> |
     Examples:
-      | msgKey  | msgData              |
-      | msgKey1 | message payload data |
+      | msgKey        | msgData              |
+      | msgKeyString1 | message payload data |
 
-  Scenario Outline: DLT incoming message when message key contains 'error'
+  Scenario Outline: forward message to DLT when message key contains 'error'
     Given application is started
     When a GET request has been made to '/api/kafka/send' endpoint with query parameters
       | key      | payload   |
@@ -45,8 +45,8 @@ Feature: Describe endpoints related to KafkaMessageController
       | encoding | status   | topic   | modifiedBy              | txnId   |
       | JSON     | <status> | <topic> | TransactionJsonListener | <txnId> |
     Examples:
-      | topic                            | msgKey  | status | txnId |
-      | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
+      | topic                            | msgKey      | status | txnId |
+      | business.fct.transaction-json.v0 | msgKeyJson1 | NEW    | TXN1  |
 
   Scenario Outline: JSON message sent via POST endpoint with the specific header should be delivered onto the topic
     Given application is started
@@ -57,12 +57,12 @@ Feature: Describe endpoints related to KafkaMessageController
       | key      | kafka_header.should-skip |
       | <msgKey> | true                     |
     Then the response status is 201
-    And verify no interaction with TransactionJsonListenerService happened during 2 seconds
+    And verify no interaction with TransactionJsonListenerService happened during 10 seconds
     Examples:
-      | topic                            | msgKey  | status | txnId |
-      | business.fct.transaction-json.v0 | msgKey1 | NEW    | TXN1  |
+      | topic                            | msgKey      | status | txnId |
+      | business.fct.transaction-json.v0 | msgKeyJson2 | NEW    | TXN1  |
 
-  Scenario Outline: DLT incoming message when JSON message sent via POST endpoint and message key contains 'error'
+  Scenario Outline: a message should be forwarded to DLT when JSON message sent via POST endpoint and message key contains 'error'
     Given application is started
     And the following TransactionEvent payload is
       | status   | amount | txnId   |
@@ -76,7 +76,7 @@ Feature: Describe endpoints related to KafkaMessageController
     And verify TransactionJsonListenerService was invoked <numberOfRetries> times
     Examples:
       | topic                            | status | txnId | msgKey                  | numberOfRetries |
-      | business.fct.transaction-json.v0 | NEW    | TXN1  | error                   | 3               |
+      | business.fct.transaction-json.v0 | NEW    | TXN1  | error_json              | 3               |
       | business.fct.transaction-json.v0 | NEW    | TXN1  | non-retryable-exception | 1               |
 
   Scenario Outline: AVRO message sent via POST endpoint should be delivered onto the topic

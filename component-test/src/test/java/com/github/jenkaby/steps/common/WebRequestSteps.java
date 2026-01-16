@@ -10,9 +10,10 @@ import io.cucumber.java.en.When;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.SoftAssertions;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.lang.Nullable;
@@ -52,8 +53,8 @@ public class WebRequestSteps {
                                                   String endpoint,
                                                   @Nullable @Transpose DataTable queryParams) {
 
-        var request = new HttpEntity<>(scenarioContext.getRequestBody(), scenarioContext.getRequestHeaders());
-        var uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + port + endpoint);
+        var request = new HttpEntity<>(scenarioContext.getRequestBody(), HttpHeaders.readOnlyHttpHeaders(scenarioContext.getRequestHeaders()));
+        var uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:" + port + endpoint);
         Optional.ofNullable(queryParams)
                 .map(DataTable::asMap)
                 .orElse(Map.of())

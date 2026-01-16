@@ -1,6 +1,7 @@
 package com.github.jenkaby.config.web.support;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class LoggingClientHttpRequestInterceptor implements ClientHttpRequestInterceptor {
 
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public @NonNull ClientHttpResponse intercept(HttpRequest request, byte @NonNull [] body, ClientHttpRequestExecution execution) throws IOException {
 
         log.info("DOWNSTREAM REQUEST -> method={} uri={} headers={} body={}",
                 request.getMethod(),
