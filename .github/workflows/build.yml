@@ -19,6 +19,7 @@ jobs:
   dependency-submission:
     name: "Submit Dependency Graph"
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
