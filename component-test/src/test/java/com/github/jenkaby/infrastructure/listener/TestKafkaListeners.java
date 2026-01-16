@@ -27,7 +27,7 @@ public class TestKafkaListeners {
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
             ConsumerRecord<String, String> message) {
-        log.info("[TEST] Message received '{}' from topic '{}'", message.value(), topic);
+        log.info("[TEST][{}] Message received '{}' from topic '{}'", messageKey, message.value(), topic);
         messagesStore.receiveMsg(topic, message);
     }
 
@@ -39,11 +39,11 @@ public class TestKafkaListeners {
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
             ConsumerRecord<String, ?> message) {
-        log.info("[TEST] JSON Message received '{}' from topic '{}'", message.value().getClass(), topic);
-        log.debug("[TEST] JSON Message header size '{}' from topic '{}'", message.headers().toArray().length, topic);
+        log.info("[TEST][{}] JSON Message received '{}' from topic '{}'", messageKey, message.value().getClass(), topic);
+        log.debug("[TEST][{}] JSON Message header size '{}' from topic '{}'", messageKey, message.headers().toArray().length, topic);
         message.headers().forEach(
-                h -> log.info("[TEST] JSON header key:'{}'='{}' from topic '{}'",
-                        h.key(), new String(h.value(), StandardCharsets.UTF_8).intern(), topic)
+                h -> log.info("[TEST][{}] JSON header key:'{}'='{}' from topic '{}'",
+                        messageKey, h.key(), new String(h.value(), StandardCharsets.UTF_8).intern(), topic)
         );
         messagesStore.receiveMsg(topic, message);
     }
@@ -57,7 +57,7 @@ public class TestKafkaListeners {
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_KEY) String messageKey,
             ConsumerRecord<String, TransactionEventAvro> message) {
-        log.info("[TEST] Message received '{}' from topic '{}'", message.value(), topic);
+        log.info("[TEST][{}] Message received '{}' from topic '{}'", messageKey, message.value(), topic);
         messagesStore.receiveMsg(topic, message);
     }
 }
