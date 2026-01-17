@@ -6,7 +6,7 @@ hypersistanceUtilsHibernateVersion = '3.14.1'
 apacheAvroVersion = '1.11.4'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
-cucumberVersion = '7.20.1'
+cucumberVersion = '7.33.0'
 dependencyCheckVersion = '11.1.1'
 testContainersVersion = '2.0.3'
 # TODO upgrade version when app is migrated to SB3.4+
