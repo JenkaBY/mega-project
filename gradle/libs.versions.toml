@@ -2,7 +2,7 @@
 springBootVersion = '4.0.1'
 springDepManagementVersion = '1.1.7'
 mapStructVersion = '1.6.3'
-hypersistanceUtilsHibernateVersion = '3.14.1'
+hypersistanceUtilsHibernateVersion = '3.15.0'
 apacheAvroVersion = '1.11.4'
 confluentKafkaVersion = '7.5.1'
 gradlePlugingAvro = '1.9.1'
