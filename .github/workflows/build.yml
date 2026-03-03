@@ -87,7 +87,7 @@ jobs:
           APP_TEST_LATENCY_VALIDATION_THRESHOLD: ${{ matrix.latency-threshold }}
       - name: Upload ${{ matrix.test-type }} test report
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.test-type }}-test-report
           path: ${{ matrix.report-path }}
