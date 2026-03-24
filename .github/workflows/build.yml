@@ -29,7 +29,7 @@ jobs:
           java-version: 25
           distribution: 'corretto'
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v5
+        uses: gradle/actions/dependency-submission@v6
 
   build:
     name: "Gradle build on JDK 25"
@@ -46,7 +46,7 @@ jobs:
       - name: Print gradlew version
         run: ./gradlew -v
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: false
       - name: Build only service with Gradle. Skip tests
@@ -78,7 +78,7 @@ jobs:
           distribution: 'corretto'
           cache: 'gradle'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-read-only: true
       - name: Run ${{ matrix.test-type }} tests
