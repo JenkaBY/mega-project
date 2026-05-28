@@ -50,7 +50,7 @@ jobs:
         with:
           cache-read-only: false
       - name: Build only service with Gradle. Skip tests
-        run: ./gradlew clean :service:build -x :test -x :service:test -x :service:bootJar -x :component-test:build -x :component-test:test $GRADLE_ARGS
+        run: ./gradlew :service:build -x :test $GRADLE_ARGS
   test:
     name: "Tests: ${{ matrix.test-type }}"
     needs: [ build ]

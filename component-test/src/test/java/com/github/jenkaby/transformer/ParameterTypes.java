@@ -1,5 +1,6 @@
 package com.github.jenkaby.transformer;
 
+import com.github.jenkaby.config.WebConfig;
 import com.github.jenkaby.model.AuthTokenType;
 import com.github.jenkaby.service.support.ProxyType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 public class ParameterTypes {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = WebConfig.DEFAULT_OBJECT_MAPPER;
 
     @DefaultParameterTransformer
     @DefaultDataTableEntryTransformer

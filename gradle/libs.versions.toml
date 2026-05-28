@@ -9,7 +9,6 @@ gradlePlugingAvro = '1.9.1'
 cucumberVersion = '7.33.0'
 dependencyCheckVersion = '11.1.1'
 testContainersVersion = '2.0.3'
-# TODO upgrade version when app is migrated to SB3.4+
 # see the compatibility matrix at https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot
 springdocOpenApiStarterWebUiVersion = '3.0.1'
 
@@ -55,7 +54,6 @@ apache-avro = { module = "org.apache.avro:avro", version.ref = 'apacheAvroVersio
 sb-conf-processor = { module = 'org.springframework.boot:spring-boot-configuration-processor' }
 
 ## TESTS deps
-# unit test deps
 mockito-core = { module = "org.mockito:mockito-core" }
 sb-starter-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
 sb-starter-webmvc-test = { module = 'org.springframework.boot:spring-boot-starter-webmvc-test' }
@@ -65,14 +63,12 @@ sb-resttestclient = { module = 'org.springframework.boot:spring-boot-resttestcli
 sb-starter-jdbc-test = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc-test' }
 sb-starter-jpa-test = { module = 'org.springframework.boot:spring-boot-starter-data-jpa-test' }
 sb-starter-liquibase-test = { module = 'org.springframework.boot:spring-boot-starter-liquibase-test' }
-assertj-core = { module = 'org.assertj:assertj-core' }
-awaitility = { module = 'org.awaitility:awaitility' }
 sb-starter-security-test = { module = 'org.springframework.boot:spring-boot-starter-security-test' }
 
 test-container-junit = { module = 'org.testcontainers:testcontainers-junit-jupiter' }
 test-container-postgres = { module = 'org.testcontainers:testcontainers-postgresql' }
 test-container-kafka = { module = 'org.testcontainers:testcontainers-kafka' }
-# component tests fail without this dependency due to some classpath issue
+# component tests fail without this dependency due to some classpath issue TODO check it!
 apache-commons-codec = { module = 'commons-codec:commons-codec' }
 
 cucumber-java = { module = 'io.cucumber:cucumber-java' }
